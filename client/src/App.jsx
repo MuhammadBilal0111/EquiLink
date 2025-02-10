@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-      <h1>EquiLink</h1>
+      <h1>Equilink</h1>
     </>
   );
 }
