@@ -6,7 +6,7 @@ class UserValidator extends BaseValidator {
   validateLoginUser = (user) => {
     const schema = Joi.object().keys({
       email: Joi.string().email().required().label("Email"),
-      password: Joi.string().min(8).max(20).required().label("Password"),
+      password: Joi.string().max(20).required().label("Password"),
     });
 
     return this.validate(schema, user);
