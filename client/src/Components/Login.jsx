@@ -3,12 +3,13 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 import { useDispatch } from 'react-redux';
+import { userActions } from '../store/index.js';
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-    
+
     const navigate = useNavigate()
     const dispatch = useDispatch();
 
@@ -23,7 +24,7 @@ const Login = () => {
               headers: { "Content-Type": "application/json" },
             });
             if (res.data.status === true) {
-              dispatch(userActions.setUser(res.data.data.user)); // Dispatching user data to Redux store
+              dispatch(userActions.setUser(res.data.data)); // Dispatching user data to Redux store
               console.log(res.data)
               navigate('/')
             } else {

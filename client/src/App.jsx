@@ -11,6 +11,7 @@ function App() {
 
   return (
     <>
+      {console.log(authUser)}
       <Routes>
       <Route
           path="/signup"

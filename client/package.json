@@ -10,12 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@reduxjs/toolkit": "^2.6.0",
-=======
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-radio-group": "^1.2.3",
->>>>>>> b298f72735d47e7b4e14550af19fb7b29e2f2351
     "@tailwindcss/vite": "^4.0.9",
     "axios": "^1.8.1",
     "class-variance-authority": "^0.7.1",

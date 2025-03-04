@@ -6,31 +6,52 @@ import InputField from "./elements/InputField";
 import Button from "./elements/Button";
 import { Link } from 'react-router-dom';
 import InputRadio from './elements/InputRadio';
+import { useDispatch } from 'react-redux';
+import { userActions } from './../store/index.js';
+
 
 const Signup = () => {
+
+    const dispatch = useDispatch()
+
+    const emailRef = useRef(null);
+    const nameRef = useRef(null);
+    const phoneRef = useRef(null);
+    const passwordRef = useRef(null);
+    const cPasswordRef = useRef(null);
+    const typeRef = useRef(null);
+
     const navigate = useNavigate()
 
     const onSubmit = async () => {
-        const data = { email: emailRef.current?.value, password: passwordRef.current?.value }
+
+        const email = emailRef.current?.value
+        const password = passwordRef.current?.value
+        const contactNo =  phoneRef.current?.value
+        const name = nameRef.current?.value
+        const role = "Entreprenuer"
+    
+        const data = { email,password,contactNo,name, role}
+
+        if(data.password != cPasswordRef.current.value){
+            console.log("Password and confirmPassword are not same")
+            return;
+        }
         console.log(data)
         try {
-            // const res = await axios.post("http://localhost:5000/api/auth/login", data, {  headers: {
-            //     "Content-Type": "application/json"
-            // }})
-
-            const res = { data: { status: "success", name: "ahad" } }
-            if (res.data.status == "success") {
-                console.log(res.data.name)
-                navigate("/")
-                console.log("here")
+            const res = await axios.post("http://localhost:5000/api/auth/signup", data , {
+              headers: { "Content-Type": "application/json" },
+            });
+            if (res.data.status === true) {
+              dispatch(userActions.setUser(res.data.data));
+              navigate('/')
+            } else {
+              console.log("error")
             }
-        } catch (err) {
-            console.log("Login failed", err)
-        }
+          } catch (err) {
+            console.log(err)
+          }
     }
-
-    const emailRef = useRef(null)
-    const passwordRef = useRef(null)
 
     return (
         <>
@@ -71,12 +92,12 @@ const Signup = () => {
                             </div>
 
                             <div className="flex flex-col mb-3">
-                                <InputField label="Name" ref={emailRef} placeholder="Enter your full name" />
-                                <InputField label="Email" ref={emailRef} placeholder="Enter your email" />
-                                <InputField label="Phone" ref={passwordRef} placeholder="Enter your phone number" />
-                                <InputField label="Password" ref={passwordRef} placeholder="Enter your password" />
-                                <InputField label="Confirm Password" ref={passwordRef} placeholder="Re-enter your password" />
-                                <InputRadio option1={"Entrepreneur"} option2={"Investor"} />
+                                <InputField label="Name" ref={nameRef} type="text" placeholder="Enter your full name" />
+                                <InputField label="Email" ref={emailRef} type="email" placeholder="Enter your email" />
+                                <InputField label="Phone" ref={phoneRef} type="tel" placeholder="Enter your phone number" />
+                                <InputField label="Password" ref={passwordRef} type="password" placeholder="Enter your password" />
+                                <InputField label="Confirm Password" ref={cPasswordRef} type="password" placeholder="Re-enter your password" />
+                                <InputRadio option1={"Entrepreneur"} ref={typeRef} option2={"Investor"} />
                             </div>
 
                             <div className="w-full flex flex-col justify-center items-center gap-3">
