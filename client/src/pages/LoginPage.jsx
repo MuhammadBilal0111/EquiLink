@@ -1,35 +1,40 @@
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../store";
+
+import axios from "axios";
 
 
 
 
 const LoginPage = () => {
 
+    const dispatch = useDispatch();
+    // const {authUser} = useSelector((state) => state.userStore);
+ 
     const navigate = useNavigate()
+    const emailRef = useRef(null)
+    const passwordRef = useRef(null)
+
 
     const onSubmit = async ()=>{
         const data = {email: emailRef.current?.value, password: passwordRef.current?.value}
-        console.log(data)
-        try{
-            // const res = await axios.post("http://localhost:5000/api/auth/login", data, {  headers: {
-            //     "Content-Type": "application/json"
-            // }})
-
-            const res = {data:{status:"success", name:"ahad"}}
-            if(res.data.status == "success"){
-                console.log(res.data.name)
-                navigate("/")
-                console.log("here")
+        try {
+            const res = await axios.post("http://localhost:5000/api/auth/login", data , {
+              headers: { "Content-Type": "application/json" },
+            });
+            if (res.data.status === true) {
+              dispatch(userActions.setUser(res.data.data.user)); // Dispatching user data to Redux store
+              console.log(res.data)
+              navigate('/')
+            } else {
+              console.log("error")
             }
-        }catch(err){
-            console.log("Login failed", err)
-        }
+          } catch (err) {
+            console.log(err)
+          }
     }
-
-    const emailRef = useRef(null)
-    const passwordRef = useRef(null)
 
   return (
     <>
@@ -71,7 +76,7 @@ const LoginPage = () => {
                         <input ref={passwordRef} type="text" placeholder="Enter your password" className="bg-[#262626] rounded-[8px] h-[2rem] w-80 p-3"/>
                     </div>
 
-                    <button className="absolute z-10 bg-red-500" onClick={()=>{onSubmit()}} >Login</button>
+                    <button type="submit" className="absolute z-10 bg-red-500" onClick={()=>{onSubmit()}} >Login</button>
                 </div>
 
             </div>
