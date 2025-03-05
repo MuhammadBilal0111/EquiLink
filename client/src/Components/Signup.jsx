@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import InputRadio from './elements/InputRadio';
 import { useDispatch } from 'react-redux';
 import { userActions } from './../store/index.js';
+import { useState } from 'react';
+import { toast, Toaster } from 'sonner';
 
 
 const Signup = () => {
@@ -19,7 +21,8 @@ const Signup = () => {
     const phoneRef = useRef(null);
     const passwordRef = useRef(null);
     const cPasswordRef = useRef(null);
-    const typeRef = useRef(null);
+    const [role, setRole] = useState("Entrepreneur"); // Default value
+
 
     const navigate = useNavigate()
 
@@ -29,12 +32,13 @@ const Signup = () => {
         const password = passwordRef.current?.value
         const contactNo =  phoneRef.current?.value
         const name = nameRef.current?.value
-        const role = "Entreprenuer"
+
     
         const data = { email,password,contactNo,name, role}
 
         if(data.password != cPasswordRef.current.value){
             console.log("Password and confirmPassword are not same")
+            toast.error("Password and Confirm Password do not match");
             return;
         }
         console.log(data)
@@ -44,12 +48,15 @@ const Signup = () => {
             });
             if (res.data.status === true) {
               dispatch(userActions.setUser(res.data.data));
+              toast.success("Signed up successfully!")
               navigate('/')
             } else {
-              console.log("error")
+            console.log("error")
+            toast.error("Something went wrong");
             }
           } catch (err) {
             console.log(err)
+            toast.error("Something went wrong");
           }
     }
 
@@ -60,7 +67,7 @@ const Signup = () => {
                 <img
                     src="/Style2.jpg"
                     alt="Background"
-                    className="absolute top-[-150px] left-0 w-full h-[1000px]"
+                    className="absolute top-[-210px] left-0 w-full h-[1000px]"
                 />
 
                 {/* LOGO */}
@@ -75,7 +82,7 @@ const Signup = () => {
                 </div>
 
                 {/* main page */}
-                <div className="flex m-5 gap-3 relative z-10">
+                <div className="flex mx-5 gap-3 relative z-10">
                     <div className="w-[60%]"></div>
 
                     {/* right side */}
@@ -97,7 +104,8 @@ const Signup = () => {
                                 <InputField label="Phone" ref={phoneRef} type="tel" placeholder="Enter your phone number" />
                                 <InputField label="Password" ref={passwordRef} type="password" placeholder="Enter your password" />
                                 <InputField label="Confirm Password" ref={cPasswordRef} type="password" placeholder="Re-enter your password" />
-                                <InputRadio option1={"Entrepreneur"} ref={typeRef} option2={"Investor"} />
+                                <InputRadio option1="Entrepreneur" option2="Investor" setValue={setRole} />
+
                             </div>
 
                             <div className="w-full flex flex-col justify-center items-center gap-3">

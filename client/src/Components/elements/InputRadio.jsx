@@ -1,11 +1,10 @@
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const InputRadio = ({option1, option2}) => {
-
+const InputRadio = ({ option1, option2, setValue }) => {
     return (
         <div className="py-1">
-            <RadioGroup defaultValue={option1} className='flex text-white'>
+            <RadioGroup defaultValue={option1} onValueChange={setValue} className='flex text-white'>
                 <div className="flex items-center space-x-2">
                     <RadioGroupItem value={option1} id={option1} />
                     <Label htmlFor={option1}>{option1}</Label>
@@ -16,8 +15,7 @@ const InputRadio = ({option1, option2}) => {
                 </div>
             </RadioGroup>
         </div>
-    )
-}
+    );
+};
 
-export default InputRadio
-
+export default InputRadio;

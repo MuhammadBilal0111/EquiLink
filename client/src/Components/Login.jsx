@@ -26,12 +26,15 @@ const Login = () => {
             if (res.data.status === true) {
               dispatch(userActions.setUser(res.data.data)); // Dispatching user data to Redux store
               console.log(res.data)
+              toast.success("Logged in successfully!")
               navigate('/')
             } else {
-              console.log("error")
+            console.log("error")
+            toast.error("Something went wrong");
             }
           } catch (err) {
             console.log(err)
+            toast.error("Something went wrong");
           }
     }
 
@@ -57,7 +60,7 @@ const Login = () => {
                 </div>
 
                 {/* main page */}
-                <div className="flex m-5 gap-3 relative z-10">
+                <div className="flex mx-5 gap-3 relative z-10">
                     <div className="w-[60%]"></div>
 
                     {/* right side */}
