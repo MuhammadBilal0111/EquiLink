@@ -1,12 +1,14 @@
 import React from 'react'
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
 import { useDispatch } from 'react-redux';
 import { userActions } from '../store/index.js';
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
 import { Link } from 'react-router-dom';
+import { axiosInstance } from '@/lib/axios.js';
+
+
 
 const Login = () => {
 
@@ -20,21 +22,20 @@ const Login = () => {
     const onSubmit = async ()=>{
         const data = {email: emailRef.current?.value, password: passwordRef.current?.value}
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/login", data , {
-              headers: { "Content-Type": "application/json" },
-            });
+            const res = await axiosInstance.post("/auth/login", data)
             if (res.data.status === true) {
-              dispatch(userActions.setUser(res.data.data)); // Dispatching user data to Redux store
-              console.log(res.data)
+            const user = res.data.data
+              dispatch(userActions.setUser(user)); // Dispatching user data to Redux store
               toast.success("Logged in successfully!")
-              navigate('/')
-            } else {
-            console.log("error")
+              localStorage.setItem("user",user)
+              navigate('/home')
+            }
+            else {
             toast.error("Something went wrong");
             }
-          } catch (err) {
+          }catch (err) {
             console.log(err)
-            toast.error("Something went wrong");
+            toast.error(err.message);
           }
     }
 
@@ -78,7 +79,7 @@ const Login = () => {
 
                             <div className="flex flex-col gap-1">
                                 <InputField label="Email" ref={emailRef} placeholder="Enter your email" />
-                                <InputField label="Password" ref={passwordRef} placeholder="Enter your password" />
+                                <InputField label="Password" ref={passwordRef} type="password" placeholder="Enter your password" />
                             </div>
 
                             <div className="w-full flex flex-col justify-center items-center gap-3">

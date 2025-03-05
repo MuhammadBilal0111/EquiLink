@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"
+import {axiosInstance} from "./../lib/axios.js"
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
 import { Link } from 'react-router-dom';
@@ -33,7 +33,10 @@ const Signup = () => {
         const contactNo =  phoneRef.current?.value
         const name = nameRef.current?.value
 
-    
+        if(!email || !password || !contactNo || !name){
+            toast.error("Please fill all the fields")
+            return;
+        }
         const data = { email,password,contactNo,name, role}
 
         if(data.password != cPasswordRef.current.value){
@@ -41,22 +44,17 @@ const Signup = () => {
             toast.error("Password and Confirm Password do not match");
             return;
         }
-        console.log(data)
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/signup", data , {
-              headers: { "Content-Type": "application/json" },
-            });
+            const res = await axiosInstance.post("/auth/signup", data)
             if (res.data.status === true) {
               dispatch(userActions.setUser(res.data.data));
               toast.success("Signed up successfully!")
-              navigate('/')
+              navigate('/home')
             } else {
-            console.log("error")
             toast.error("Something went wrong");
             }
           } catch (err) {
-            console.log(err)
-            toast.error("Something went wrong");
+            toast.error(err.message);
           }
     }
 
@@ -120,4 +118,4 @@ const Signup = () => {
     );
 }
 
-export default Signup
+export default Signup;
