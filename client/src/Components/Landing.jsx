@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import Button from "./elements/Button";
 import Hero from "./elements/Hero";
 import Blocks from "./elements/Blocks"
+import CTO from "./elements/CTO"
 
 const Landing = () => {
   return (
@@ -34,6 +35,7 @@ const Landing = () => {
       <div className="flex flex-col justify-center items-center bg-black font-poppins">
         <Hero/>
         <Blocks/>
+        <CTO/>
       </div>
     </div>
   );

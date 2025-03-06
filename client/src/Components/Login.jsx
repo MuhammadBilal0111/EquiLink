@@ -51,7 +51,7 @@ const Login = () => {
 
                 {/* LOGO */}
                 <div className="z-10 relative">
-                    <Link>
+                    <Link to="/">
                         <img
                             className="relative w-[120px] h-[30px] top-[25px] left-[40px]"
                             src="/FullLogo.png"

@@ -1,7 +1,7 @@
 import React from 'react'
 import Landing from '../Components/Landing';
 
-const LoginPage = () => {
+const LandingPage = () => {
   return (
     <div>
       <Landing/>
@@ -9,4 +9,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage;
+export default LandingPage;
