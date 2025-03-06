@@ -3,6 +3,7 @@ import Button from "./elements/Button";
 import Hero from "./elements/Hero";
 import Blocks from "./elements/Blocks"
 import CTO from "./elements/CTO"
+import Footer from "./elements/Footer";
 
 const Landing = () => {
   return (
@@ -36,6 +37,7 @@ const Landing = () => {
         <Hero/>
         <Blocks/>
         <CTO/>
+        <Footer/>
       </div>
     </div>
   );
