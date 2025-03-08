@@ -14,6 +14,8 @@ router.post(
   UserController.createUserProfile
 );
 
+router.get("/get-userProfile/:id?", UserController.getUserProfile);
+
 
 // router.post("/create-user", UserController.createUser);
 // router.patch(
