@@ -8,6 +8,12 @@ class UserValidator extends BaseValidator {
         "number.base": "User ID must be a number",
         "any.required": "User ID is required",
       }),
+      name: Joi.string().optional().max(100).messages({
+        "string.max": "Name must be less than 100 characters",
+      }),
+      email: Joi.string().email().optional().messages({
+        "string.email": "Email must be a valid email",
+      }),
       contactNo: Joi.string()
         .pattern(/^\d{10,15}$/)
         .messages({
@@ -43,6 +49,12 @@ class UserValidator extends BaseValidator {
 
   validateUpdateUserProfile = (date) => {
     const schema = Joi.object({
+      name: Joi.string().optional().max(100).messages({
+        "string.max": "Name must be less than 100 characters",
+      }),
+      email: Joi.string().email().optional().messages({
+        "string.email": "Email must be a valid email",
+      }),
       contactNo: Joi.string()
         .pattern(/^\d{10,15}$/)
         .optional()

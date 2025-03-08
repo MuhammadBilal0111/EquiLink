@@ -4,7 +4,10 @@ const { Op, where } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserRepo = require("../repos/UserRepo.js");
-const { validateLoginUser } = require("../validators/AuthValidator.js");
+const {
+  validateLoginUser,
+  validateSignUpUser,
+} = require("../validators/AuthValidator.js");
 const { jwtSecret } = require("../config/config.js");
 const crypto = require("crypto");
 const transporter = require("../utils/email.js");
@@ -63,7 +66,13 @@ class AuthController extends BaseController {
   };
 
   signUpUser = async (req, res) => {
-    const { contactNo, password, ...otherFields } = req.body;
+    const validationResult = validateSignUpUser(req?.body);
+
+    if (!validationResult.status) {
+      return this.validationErrorResponse(res, validationResult.message);
+    }
+
+    const { password, ...otherFields } = req.body;
 
     const userExist = await UserRepo?.findUser({
       email: otherFields.email,

@@ -2,20 +2,32 @@ const BaseController = require("./Base.controller.js");
 const db = require("../models/index.js");
 const { validateCreateUserProfile } = require("../validators/UserValidator.js");
 const UserProfileRepo = require("../repos/UserProfile.js");
+const UserRepo = require("../repos/UserRepo.js");
 
 class UserController extends BaseController {
   createUserProfile = async (req, res) => {
+    const userId = req.user.id;
     const validationResult = validateCreateUserProfile(req?.body);
 
     if (!validationResult) {
       return this.validationErrorResponse(res, validationResult.message);
     }
 
-    const userProfile = await UserProfileRepo.createUserProfile(req.body);
+    const { name, email, ...otherFields } = req?.body;
+
+    if (name || email) {
+      const user = await UserRepo.updateUser({ name, email }, userId);
+      if (!user) {
+        return this.errorResponse(res, "Failed to update user", 400);
+      }
+    }
+
+    const userProfile = await UserProfileRepo.createUserProfile(otherFields);
 
     if (!userProfile) {
       return this.errorResponse(res, "Failed to create user profile");
     }
+
     return this.successResponse(res, userProfile);
   };
 
