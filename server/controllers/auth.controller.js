@@ -10,18 +10,21 @@ const crypto = require("crypto");
 const transporter = require("../utils/email.js");
 const { constants } = require("../utils/constant.js");
 
-//ibad: do not create custom response in controller, delete password from response
 
 class AuthController extends BaseController {
-  // constructor() {
-  //   super();
-  // }
-
-  // will refactor
   signToken = (userResponse) => {
-    return jwt.sign({ data: userResponse }, jwtSecret, {
+    const token = jwt.sign({ data: userResponse }, jwtSecret, {
       expiresIn: constants.expiresIn,
     });
+
+    res.cookie("token", token, {
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: false,
+      httpOnly: true,
+      sameSite: "strict",
+    });
+
+    return token;
   };
 
   loginUser = async (req, res) => {
