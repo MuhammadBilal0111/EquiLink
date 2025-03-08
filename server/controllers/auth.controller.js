@@ -10,19 +10,20 @@ const crypto = require("crypto");
 const transporter = require("../utils/email.js");
 const { constants } = require("../utils/constant.js");
 
-
 class AuthController extends BaseController {
-  signToken = (userResponse) => {
+  signToken = (userResponse, res) => {
     const token = jwt.sign({ data: userResponse }, jwtSecret, {
       expiresIn: constants.expiresIn,
     });
 
-    res.cookie("token", token, {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      secure: false,
-      httpOnly: true,
-      sameSite: "strict",
-    });
+    if (res) {
+      res.cookie("token", token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: false,
+        httpOnly: true,
+        sameSite: "strict",
+      });
+    }
 
     return token;
   };
@@ -56,7 +57,7 @@ class AuthController extends BaseController {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
-    let token = this.signToken(JSON.stringify(user));
+    let token = this.signToken(JSON.stringify(user), res);
 
     return this.successResponse(res, { user, token }, "login Successful");
   };

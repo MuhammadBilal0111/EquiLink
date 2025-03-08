@@ -12,63 +12,8 @@ class UserRepo extends BaseRepository {
     return this.create(user);
   }
 
-  // async findUser(query){
-  //   return this.findOneNew(query);
-  // }
-
-  async createUserAndProfile(user) {
-    return db.sequelize.transaction(async (transaction) => {
-      const createdUser = await this.create(user, { transaction });
-      const createdProfile = await db.UserProfile.create(
-        { ...user.profile, userId: createdUser.id },
-        { transaction }
-      );
-
-      let leaveArr = [
-        "Annual Leave",
-        "Casual Leave",
-        "Sick Leave",
-        "Unpaid Leave",
-      ];
-      const leavePromises = leaveArr.map((leave) =>
-        db.Leave.create(
-          {
-            userId: createdUser.id,
-            typeOfLeave: leave,
-            totalLeaves: constants.maxLeave,
-            availableLeaves: constants.maxLeave,
-            usedLeaves: constants.minLeave,
-            bookedLeaves: constants.minLeave,
-          },
-          { transaction }
-        )
-      );
-
-      await Promise.all(leavePromises);
-
-      createdUser.password = undefined;
-      return { user: createdUser, profile: createdProfile };
-    });
-  }
-
   async getUsers(searchQuery = {}) {
     return this.findAll(searchQuery);
-  }
-
-  async updateUserAndProfile(user, id, customQuery) {
-    return db.sequelize.transaction(async (transaction) => {
-      await this.update(user, { id }, { transaction });
-      if (user.profile) {
-        await db.UserProfile.update(
-          user.profile,
-          {
-            where: { userId: id },
-          },
-          { transaction }
-        );
-      }
-      return this.findOneWithInclude(customQuery);
-    });
   }
 
   async findById(id) {
@@ -92,19 +37,6 @@ class UserRepo extends BaseRepository {
     return this.findOne(id);
   }
 
-  // async getRolePermissions(roleId) {
-  //   return db.RolePermission.findAll({
-  //     where: { roleId },
-  //     include: [
-  //       {
-  //         model: db.Permission,
-  //         as: "Permission",
-  //         attributes: ["name"],
-  //       },
-  //     ],
-  //   });
-  // }
-
   async isUserExists(id) {
     return this.count(id);
   }
@@ -122,10 +54,6 @@ class UserRepo extends BaseRepository {
     query = customQuery;
     return this.findOne(query);
   }
-
-  // async findUserByEmail(email) {
-  //   return this.findOneWithInclude(email);
-  // }
 }
 
 module.exports = new UserRepo();
