@@ -30,12 +30,16 @@ class UserValidator extends BaseValidator {
       }),
       cnicNo: Joi.string()
         .pattern(/^\d{13}$/)
-        .required()
+        .optional()
         .messages({
           "string.pattern.base": "CNIC number must be exactly 13 digits",
           "any.required": "CNIC number is required",
         }),
-      cnicPicture: Joi.string().uri().required().messages({
+      cnicFrontImage: Joi.string().uri().required().messages({
+        "string.uri": "CNIC picture must be a valid URL",
+        "any.required": "CNIC picture is required",
+      }),
+      cnicBackImage: Joi.string().uri().optional().messages({
         "string.uri": "CNIC picture must be a valid URL",
         "any.required": "CNIC picture is required",
       }),

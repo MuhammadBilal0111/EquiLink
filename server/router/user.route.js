@@ -1,33 +1,16 @@
 const express = require("express");
-const router = express.Router();
 const UserController = require("../controllers/User.controller.js");
+const uploadMiddleware = require("../middlewares/multer.middleware.js");
 
-// router.get(
-//   "/get-user",
-//   // authorize("admin"),
-//   UserController.getUserById
-// );
-// router.get("/get-all-users", UserController.getAllUsers);
+const router = express.Router();
+
 router.post(
   "/create-userProfile",
-  // authorize("admin"),
+  uploadMiddleware,
   UserController.createUserProfile
 );
 
 router.get("/get-userProfile/:id?", UserController.getUserProfile);
 router.patch("/update-userProfile", UserController.updateUserProfile);
-
-
-// router.post("/create-user", UserController.createUser);
-// router.patch(
-//   "/update-user",
-//   // authorize("admin"),
-//   UserController.updateUser
-// );
-// router.delete(
-//   "/delete-user/:id",
-//   // authorize("admin"),
-//   UserController.deleteUser
-// );
 
 module.exports = router;
