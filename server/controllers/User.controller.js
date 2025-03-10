@@ -3,17 +3,18 @@ const db = require("../models/index.js");
 const { validateCreateUserProfile } = require("../validators/UserValidator.js");
 const UserProfileRepo = require("../repos/UserProfile.js");
 const UserRepo = require("../repos/UserRepo.js");
+const BlobStorageService = require("../services/BlobStorageService.js");
 
 class UserController extends BaseController {
   createUserProfile = async (req, res) => {
     const userId = req.user.id;
-    const validationResult = validateCreateUserProfile(req?.body);
+    const validationResult = validateCreateUserProfile(req.body);
 
     if (!validationResult) {
       return this.validationErrorResponse(res, validationResult.message);
     }
 
-    const { name, email, ...otherFields } = req?.body;
+    const { name, email, ...otherFields } = req.body;
 
     if (name || email) {
       const user = await UserRepo.updateUser({ name, email }, userId);
@@ -22,7 +23,47 @@ class UserController extends BaseController {
       }
     }
 
-    const userProfile = await UserProfileRepo.createUserProfile(otherFields);
+    let profileImageUrl = null;
+    let cnicFrontImageUrl = null;
+    let cnicBackImageUrl = null;
+
+    if (req.files?.profileImage) {
+      profileImageUrl = await BlobStorageService.uploadFileToBlobStorage(
+        `profileImages/${userId}-${Date.now()}-${
+          req.files.profileImage[0].originalname
+        }`,
+        req.files.profileImage[0].buffer,
+        req.files.profileImage[0].mimetype
+      );
+    }
+
+    if (req.files?.cnicFrontImage) {
+      cnicFrontImageUrl = await BlobStorageService.uploadFileToBlobStorage(
+        `cnicFrontImages/${userId}-${Date.now()}-${
+          req.files.cnicFrontImage[0].originalname
+        }`,
+        req.files.cnicFrontImage[0].buffer,
+        req.files.cnicFrontImage[0].mimetype
+      );
+    }
+
+    if (req.files?.cnicBackImage) {
+      cnicBackImageUrl = await BlobStorageService.uploadFileToBlobStorage(
+        `cnicBackImages/${userId}-${Date.now()}-${
+          req.files.cnicBackImage[0].originalname
+        }`,
+        req.files.cnicBackImage[0].buffer,
+        req.files.cnicBackImage[0].mimetype
+      );
+    }
+
+    const userProfile = await UserProfileRepo.createUserProfile({
+      ...otherFields,
+      userId,
+      profileImage: profileImageUrl,
+      cnicFrontImage: cnicFrontImageUrl,
+      cnicBackImage: cnicBackImageUrl,
+    });
 
     if (!userProfile) {
       return this.errorResponse(res, "Failed to create user profile");

@@ -33,7 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    cnicPicture: {
+    cnicFrontImage: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
+    cnicBackImage: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
