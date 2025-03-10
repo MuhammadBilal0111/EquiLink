@@ -96,10 +96,14 @@ const Profile = () => {
               </label>
               <input type="file" multiple id="upload-cnic" className="hidden" onChange={handleCnicImageChange} />
               {cnicImages.map((image, index) => (
-                <div key={index} className="relative">
-                  <IoMdCloseCircle className="absolute top-0 right-0 m-2 text-xl text-white cursor-pointer" onClick={() => removeCnicImage(index)} />
-                  <img src={image} className="h-[80px] w-[80px] object-cover rounded-xl" alt="CNIC" />
-                </div>
+                <div className="relative w-[80px] h-[80px]">
+                <img src={image} className="h-full w-full object-cover rounded-xl" alt="CNIC" />
+                <IoMdCloseCircle
+                  className="absolute top-[-8px] right-[-8px] text-xl text-white cursor-pointer"
+                  onClick={() => removeCnicImage(index)}
+                />
+              </div>
+              
               ))}
             </div>
           </div>

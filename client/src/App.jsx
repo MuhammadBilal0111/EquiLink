@@ -7,6 +7,7 @@ import Profile from "./components/Profile.jsx";
 import { Routes, Navigate, Route } from "react-router";
 import HomePage from "./pages/HomePage.jsx"
 import { useSelector } from "react-redux";
+import AddPitchPage from "./pages/AddPitchPage";
 
 function App() {
 
@@ -21,6 +22,8 @@ function App() {
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />}/>
         <Route path="/dashboard" element={!authUser ? <Dashboard /> : <Navigate to="/dashboard" />}/>
         <Route path="/profile" element={!authUser ? <Profile/> : <Navigate to="/profile" />}/>
+        <Route path="/addpitch" element={!authUser ? <AddPitchPage/> : <Navigate to="/addpitch" />}/>
+
       </Routes>
     </>
   );
