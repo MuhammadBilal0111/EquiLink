@@ -23,7 +23,6 @@ function App() {
         <Route path="/dashboard" element={!authUser ? <Dashboard /> : <Navigate to="/dashboard" />}/>
         <Route path="/profile" element={!authUser ? <Profile/> : <Navigate to="/profile" />}/>
         <Route path="/addpitch" element={!authUser ? <AddPitchPage/> : <Navigate to="/addpitch" />}/>
-
       </Routes>
     </>
   );
