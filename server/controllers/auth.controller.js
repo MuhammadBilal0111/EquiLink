@@ -92,11 +92,7 @@ class AuthController extends BaseController {
     const user = await UserRepo?.createUser(otherFields);
 
     if (!user) return this.errorResponse(res, "User not created", 400);
-
-
-
     
-
     user.password = undefined;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
