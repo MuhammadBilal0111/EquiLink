@@ -93,6 +93,10 @@ class AuthController extends BaseController {
 
     if (!user) return this.errorResponse(res, "User not created", 400);
 
+
+
+    
+
     user.password = undefined;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
