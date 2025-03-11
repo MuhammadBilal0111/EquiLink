@@ -155,7 +155,7 @@
 
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { MdWallet } from "react-icons/md";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
@@ -164,24 +164,68 @@ import { IoMdCloseCircle } from "react-icons/io";
 import {axiosInstance} from "./../lib/axios.js";
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
+import { toast } from "sonner";
+import { useDispatch } from 'react-redux';
+import { profileActions } from './../store/index.js';
 import { useSelector } from "react-redux";
 
 const Profile = () => {
 
+  const dispatch = useDispatch()
+
   const {authUser} = useSelector((store)=>store.userStore);
+
+  let link = ""
+
+  const getProfile = async()=>{
+    try{
+      console.log(authUser, "from profile")
+      const res = await axiosInstance.get(`/users/get-userProfile/${authUser.user.id}`,{
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+      let profile = res.data.data.at(-1)
+      dispatch(profileActions.setProfile(profile))
+      setProfileImage(res.data.data.at(-1).profileImage);
+      setFormData({
+        ...formData,
+        phone: profile.contactNo,
+        city: profile.city,
+        address: profile.address,
+        cnicNo: profile.cnicNo
+      })
+
+  }
+  catch(err){
+      console.log("error in getting profile:", err)              
+  }
+  }
+
+  useEffect(()=>{
+    getProfile()
+    
+  },[])
+
+  const {profile} = useSelector((store)=>store.profileStore);
+  console.log("user profile",profile)
+
+
 
 
   const [profileImage, setProfileImage] = useState(null);
   const [cnicImages, setCnicImages] = useState([]);
   const [cnicFiles, setCnicFiles] = useState([]); // To store actual file objects
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    cnicNo: "",
-    phone: "",
+    name: authUser.user.name,
+    email: authUser.user.email,
+    cnicNo:"",
+    phone:"",
     address: "",
     city: "",
   });
+
+
 
   const handleProfileImageChange = (event) => {
     if (event.target.files.length > 0) {
@@ -243,12 +287,12 @@ const Profile = () => {
         });
 
         console.log("Response:", response.data);
-        alert("Profile updated successfully!");
+        dispatch(profileActions.setProfile(response.data.data))
+        toast.success("Profile updated successfully!")
 
-        // Optionally reset form state or update UI
     } catch (error) {
-        console.error("Error uploading:", error);
-        alert("Failed to update profile.");
+      toast.error("Something went wrong")
+      console.log(error)
     }
 };
 
@@ -284,7 +328,7 @@ const Profile = () => {
             <div className="w-30 h-30 rounded-full bg-gray-600 flex items-center justify-center cursor-pointer">
               {profileImage ? (
                 <>
-                  <img src={profileImage} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                  <img src={profileImage || profile.profileImage} alt="Profile" className="w-full h-full object-cover rounded-full" />
                   <IoMdCloseCircle className="absolute top-0 right-2 m-2 text-xl text-white cursor-pointer" onClick={removeProfileImage} />
                 </>
               ) : (
@@ -300,7 +344,7 @@ const Profile = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-6">
-            <InputField label="Phone Number" value={formData.phone} handler={(e) => setFormData({ ...formData, phone: e.target.value })} />
+            <InputField label="Phone Number" value={formData.phone} handler={(e) => setFormData({ ...formData, phone: e.target.value})} />
             <InputField label="CNIC Number" value={formData.cnicNo} handler={(e) => setFormData({ ...formData, cnicNo: e.target.value })} />
           </div>
 
@@ -329,6 +373,7 @@ const Profile = () => {
           </div>
           {/* <Button name="Save Changes" className="h-9 mt-4" onClick={handleSubmit} /> */}
           <button name="Save Changes" className="h-9 mt-4 py-1.5 text-white text-center text-sm rounded-lg w-80 bg-gradient-to-r from-[#D1B0D4] via-[#8B68AD] to-[#5A3592] cursor-pointer" onClick={handleSubmit}>Save changes</button>
+          <img src={profile.profileImage} className="w-40 h-40 z-10 relative" alt="" />
         </div>
       </div>
     </div>

@@ -317,6 +317,11 @@ class AuthController extends BaseController {
 
     return this.successResponse(res, {}, "Password reset successfully");
   };
+
+
+  checkAuth = async (req,res)=>{
+    return this.successResponse(res, {user:req.user}, "Password reset successfully");
+  }
 }
 
 module.exports = new AuthController();
