@@ -57,6 +57,14 @@ class UserController extends BaseController {
       );
     }
 
+    const existingUserProfile = await UserProfileRepo.getUserProfiles({
+      where: { userId },
+    });
+
+    if (existingUserProfile) {
+      return this.errorResponse(res, "User profile already exists", 400);
+    }
+
     const userProfile = await UserProfileRepo.createUserProfile({
       ...otherFields,
       userId,
@@ -76,6 +84,9 @@ class UserController extends BaseController {
     const userId = req.user.id;
     console.log("tuype of useId : ", typeof userId);
     const id = req.params.id;
+    console.log("tuype of useId : ", typeof id);
+    console.log("id : ", id);
+    console.log("userId : ", userId);
 
     const customQuery = {
       where: {},

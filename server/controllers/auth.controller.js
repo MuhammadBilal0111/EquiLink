@@ -1,6 +1,6 @@
 const BaseController = require("./Base.controller.js");
 const db = require("../models");
-const { Op, where } = require("sequelize");
+const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserRepo = require("../repos/UserRepo.js");
@@ -14,6 +14,7 @@ const transporter = require("../utils/email.js");
 const { constants } = require("../utils/constant.js");
 
 class AuthController extends BaseController {
+
   signToken = (userResponse, res) => {
     const token = jwt.sign({ data: userResponse }, jwtSecret, {
       expiresIn: constants.expiresIn,
@@ -92,7 +93,7 @@ class AuthController extends BaseController {
     const user = await UserRepo?.createUser(otherFields);
 
     if (!user) return this.errorResponse(res, "User not created", 400);
-    
+
     user.password = undefined;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
