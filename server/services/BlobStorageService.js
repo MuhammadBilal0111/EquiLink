@@ -28,9 +28,7 @@ class BlobStorageService {
     );
   }
 
-  /**
-   * Ensures that the container exists before uploading.
-   */
+
   async ensureContainerExists() {
     try {
       const exists = await this.containerClient.exists();
@@ -43,14 +41,6 @@ class BlobStorageService {
       throw new Error("Failed to ensure Azure Blob Storage container exists.");
     }
   }
-
-  /**
-   * Uploads a file to Azure Blob Storage.
-   * @param {string} fileName - The name of the file
-   * @param {Buffer} fileBuffer - The file buffer data
-   * @param {string} mimeType - The MIME type of the file
-   * @returns {string} - The URL of the uploaded file
-   */
   
   async uploadFileToBlobStorage(fileName, fileBuffer, mimeType) {
     try {
