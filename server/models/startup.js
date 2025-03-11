@@ -12,11 +12,20 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "entrepreneurId",
         as: "entrepreneur",
       });
+
+      Startup.belongsTo(models.User, {
+        foreignKey: "investorId",
+        as: "investor",
+      });
+
+      Startup.belongsTo(models.Category, {
+        foreignKey: "categoryId",
+        as: "category",
+      });
     }
   }
   Startup.init(
     {
-      
       title: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -41,11 +50,20 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+
+      equity: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      projectFile: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       sequelize,
       modelName: "Startup",
-      tableName: "startups",
+      tableName: "Startups",
       timestamps: true,
     }
   );

@@ -17,6 +17,14 @@ module.exports = {
           key: "id",
         },
       },
+      investorId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: "Users",
+          key: "id",
+        },
+      },
       title: {
         type: Sequelize.STRING
       },

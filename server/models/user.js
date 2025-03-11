@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "entrepreneur",
       });
     }
+
+
+
+
+    
   }
   User.init(
     {
