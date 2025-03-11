@@ -1,6 +1,8 @@
+import { Link } from "react-router";
+
 const HomePage = ()=>{
     return(
-        <div>Home page</div>
+        <div><Link to="/profile">profile</Link></div>
     )
 }
 
