@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import { TbLayoutDashboardFilled } from "react-icons/tb";
-import { MdWallet } from "react-icons/md";
-import { BiSolidMessageSquareDetail } from "react-icons/bi";
-import { FaUser } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
@@ -32,19 +28,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="w-full bg-[#0A0A0A] flex text-white">
-      {/* Sidebar */}
-      <div className="w-1/5 bg-[#0A0A0A] border-r-1 border-r-[#3F3F3F] p-6 flex flex-col gap-6">
-        <img src="FullLogo.png" alt="Logo" className="w-[120px] h-[30px] ml-6" />
-        <div className="flex justify-center mt-24"> 
-          <nav className="flex flex-col gap-10">
-            <a href="#" className="hover:text-gray-300 flex items-center gap-8"><TbLayoutDashboardFilled size={22}/>Dashboard</a>
-            <a href="#" className="hover:text-gray-300 flex items-center gap-8"><MdWallet size={22}/>Wallet</a>
-            <a href="#" className="hover:text-gray-300 flex items-center gap-8"><BiSolidMessageSquareDetail size={22}/>Messages</a>
-            <a href="#" className="hover:text-gray-300 flex items-center gap-8"><FaUser size={22}/>Profile</a>
-          </nav>
-        </div>
-      </div>
+    <>
 
       {/* Main Content */}
       <div className="w-4/5 p-8">
@@ -125,7 +109,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
