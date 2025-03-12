@@ -37,11 +37,17 @@ const AddPitch = () => {
                 <div className="flex flex-col gap-y-6">
                     <div className="flex gap-x-16">
                         <InputField label="Name" placeholder="Give unique name to your product idea" className="w-115" />
-                        <SelectField label="Category" placeholder="Select category of your product" className="w-115"/>
+                        <SelectField
+                            label="Category"
+                            placeholder="Select category of your product"
+                            className="w-115"
+                            apiEndpoint="http://localhost:5000/api/categories/get-all-categories"
+                        />
+
                     </div>
 
                     <div className="flex gap-x-16">
-                        <InputField label="Ask for Project (coins)" placeholder="Enter your ask for project" className="w-115" type="number"/>
+                        <InputField label="Ask for Project (coins)" placeholder="Enter your ask for project" className="w-115" type="number" />
                         <InputField label="Equity (%)" placeholder="Enter percentage of equity you offer" className="w-115" type="number" />
                     </div>
 
@@ -71,26 +77,26 @@ const AddPitch = () => {
                         <div>
                             <h2 className="text-sm mb-2">Pitch Video</h2>
                             <div className="flex gap-4 items-center">
-                            <label htmlFor="upload-video">
-                                <div className="border rounded-xl border-dotted border-primary bg-[#262626] h-[80px] w-[80px] cursor-pointer flex items-center justify-center">
-                                    <h2 className="text-4xl font-light text-white">+</h2>
-                                </div>
-                            </label>
-                            <input type="file" id="upload-video" className="hidden" accept="video/*" onChange={(e) => handleFileChange(e, setVideoFiles, true)} />
-                            {/* Display Video */}
-                            {videoFiles.length > 0 && (
-                                <div>
-                                    {videoFiles.map((video, index) => (
-                                        <div key={index} className="relative w-[140px] h-[90px]">
-                                            <video className="w-full h-full rounded-xl" controls>
-                                                <source src={URL.createObjectURL(video)} type={video.type} />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                            <IoMdCloseCircle className="absolute top-0 right-0 m-2 text-xl text-white cursor-pointer" onClick={() => removeFile(index, setVideoFiles)} />
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
+                                <label htmlFor="upload-video">
+                                    <div className="border rounded-xl border-dotted border-primary bg-[#262626] h-[80px] w-[80px] cursor-pointer flex items-center justify-center">
+                                        <h2 className="text-4xl font-light text-white">+</h2>
+                                    </div>
+                                </label>
+                                <input type="file" id="upload-video" className="hidden" accept="video/*" onChange={(e) => handleFileChange(e, setVideoFiles, true)} />
+                                {/* Display Video */}
+                                {videoFiles.length > 0 && (
+                                    <div>
+                                        {videoFiles.map((video, index) => (
+                                            <div key={index} className="relative w-[140px] h-[90px]">
+                                                <video className="w-full h-full rounded-xl" controls>
+                                                    <source src={URL.createObjectURL(video)} type={video.type} />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                                <IoMdCloseCircle className="absolute top-0 right-0 m-2 text-xl text-white cursor-pointer" onClick={() => removeFile(index, setVideoFiles)} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
 

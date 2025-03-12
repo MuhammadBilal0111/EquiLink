@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Select,
     SelectContent,
@@ -7,7 +7,22 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-const SelectField = ({ label, placeholder, className }) => {
+const SelectField = ({ label, placeholder, className, apiEndpoint }) => {
+    const [options, setOptions] = useState([]);
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const response = await fetch(apiEndpoint);
+                const data = await response.json();
+                setOptions(data?.categories || []);
+            } catch (error) {
+                console.error("Error fetching options:", error);
+            }
+        };
+        fetchOptions();
+    }, [apiEndpoint]);
+
     return (
         <div className="flex flex-col gap-3 text-white text-sm">
             <label>{label}</label>
@@ -16,9 +31,15 @@ const SelectField = ({ label, placeholder, className }) => {
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent className="bg-[#262626] text-white border-none">
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="system">System</SelectItem>
+                    {options.length > 0 ? (
+                        options.map((option) => (
+                            <SelectItem key={option._id} value={option.name}>
+                                {option.name}
+                            </SelectItem>
+                        ))
+                    ) : (
+                        <SelectItem value="loading" disabled>Loading...</SelectItem>
+                    )}
                 </SelectContent>
             </Select>
         </div>
