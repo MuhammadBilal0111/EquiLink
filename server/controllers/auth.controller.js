@@ -4,24 +4,31 @@ const { Op, where } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserRepo = require("../repos/UserRepo.js");
-const { validateLoginUser } = require("../validators/AuthValidator.js");
+const {
+  validateLoginUser,
+  validateSignUpUser,
+} = require("../validators/AuthValidator.js");
 const { jwtSecret } = require("../config/config.js");
 const crypto = require("crypto");
 const transporter = require("../utils/email.js");
 const { constants } = require("../utils/constant.js");
 
-//ibad: do not create custom response in controller, delete password from response
-
 class AuthController extends BaseController {
-  // constructor() {
-  //   super();
-  // }
-
-  // will refactor
-  signToken = (userResponse) => {
-    return jwt.sign({ data: userResponse }, jwtSecret, {
+  signToken = (userResponse, res) => {
+    const token = jwt.sign({ data: userResponse }, jwtSecret, {
       expiresIn: constants.expiresIn,
     });
+
+    if (res) {
+      res.cookie("token", token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: false,
+        httpOnly: true,
+        sameSite: "strict",
+      });
+    }
+
+    return token;
   };
 
   loginUser = async (req, res) => {
@@ -43,23 +50,29 @@ class AuthController extends BaseController {
       return this.errorResponse(res, "User not found", 400);
     }
 
-    // const passwordMatch = await bcrypt.compare(password, user?.password);
+    const passwordMatch = await bcrypt.compare(password, user?.password);
 
-    // if (!passwordMatch) {
-    //   return this.errorResponse(res, "Invalid credentials", 400);
-    // }
+    if (!passwordMatch) {
+      return this.errorResponse(res, "Invalid credentials", 400);
+    }
 
     user.password = undefined;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
-    let token = this.signToken(JSON.stringify(user));
+    let token = this.signToken(JSON.stringify(user), res);
 
     return this.successResponse(res, { user, token }, "login Successful");
   };
 
   signUpUser = async (req, res) => {
-    const { contactNo, password, ...otherFields } = req.body;
+    const validationResult = validateSignUpUser(req?.body);
+
+    if (!validationResult.status) {
+      return this.validationErrorResponse(res, validationResult.message);
+    }
+
+    const { password, ...otherFields } = req.body;
 
     const userExist = await UserRepo?.findUser({
       email: otherFields.email,
@@ -79,6 +92,10 @@ class AuthController extends BaseController {
     const user = await UserRepo?.createUser(otherFields);
 
     if (!user) return this.errorResponse(res, "User not created", 400);
+
+
+
+    
 
     user.password = undefined;
     user.resetPasswordToken = undefined;
@@ -300,6 +317,11 @@ class AuthController extends BaseController {
 
     return this.successResponse(res, {}, "Password reset successfully");
   };
+
+
+  checkAuth = async (req,res)=>{
+    return this.successResponse(res, {user:req.user}, "Password reset successfully");
+  }
 }
 
 module.exports = new AuthController();

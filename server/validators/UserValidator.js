@@ -2,120 +2,95 @@ const Joi = require("joi");
 const BaseValidator = require("./BaseValidator.js");
 
 class UserValidator extends BaseValidator {
-  // validation check done
-  validateCreateUser = (user) => {
-    const schema = Joi.object().keys({
-      firstName: Joi.string().optional().label("First Name"),
-      lastName: Joi.string().optional().label("Last Name"),
-      email: Joi.string().email().optional().label("Email"),
-      password: Joi.string().optional().label("Password"),
-      shiftTime: Joi.string().optional().label("Shift Time"),
-      status: Joi.string().optional().label("Status"),
-      designationId: Joi.number().optional().label("Designation ID"),
-      roleId: Joi.number().optional().label("Role ID"),
-      profilePicture: Joi.binary().optional().label("Profile Picture"),
-      isDeleted: Joi.boolean().optional(),
-      isNewUser: Joi.boolean().optional(),
-      secondaryReporting: Joi.number().optional(),
-      primaryReporting: Joi.number().optional(),
+  validateCreateUserProfile = (data) => {
+    const schema = Joi.object({
+      userId: Joi.number().integer().required().messages({
+        "number.base": "User ID must be a number",
+        "any.required": "User ID is required",
+      }),
+      name: Joi.string().optional().max(100).messages({
+        "string.max": "Name must be less than 100 characters",
+      }),
+      email: Joi.string().email().optional().messages({
+        "string.email": "Email must be a valid email",
+      }),
+      contactNo: Joi.string()
+        .pattern(/^\d{10,15}$/)
+        .messages({
+          "string.pattern.base": "Contact number must be 10-15 digits",
+        }),
+      address: Joi.string().max(255).messages({
+        "string.max": "Address must be less than 255 characters",
+      }),
+      city: Joi.string().max(100).messages({
+        "string.max": "City name must be less than 100 characters",
+      }),
+      profileImage: Joi.string().uri().messages({
+        "string.uri": "Profile image must be a valid URL",
+      }),
+      cnicNo: Joi.string()
+        .pattern(/^\d{13}$/)
+        .optional()
+        .messages({
+          "string.pattern.base": "CNIC number must be exactly 13 digits",
+          "any.required": "CNIC number is required",
+        }),
+      cnicFrontImage: Joi.string().uri().required().messages({
+        "string.uri": "CNIC picture must be a valid URL",
+        "any.required": "CNIC picture is required",
+      }),
+      cnicBackImage: Joi.string().uri().optional().messages({
+        "string.uri": "CNIC picture must be a valid URL",
+        "any.required": "CNIC picture is required",
+      }),
+      isDeleted: Joi.boolean().default(false).messages({
+        "boolean.base": "isDeleted must be true or false",
+      }),
     });
 
-    return this.validate(schema, user);
+    return schema.validate(data, { abortEarly: false });
   };
 
-  validateCreateUserWithProfile = (user) => {
-    const schema = Joi.object().keys({
-      firstName: Joi.string().optional().label("First Name"),
-      lastName: Joi.string().optional().label("Last Name"),
-      email: Joi.string().email().optional().label("Email"),
-      password: Joi.string().optional().label("Password"),
-      shiftTime: Joi.string().optional().label("Shift Time"),
-      status: Joi.string().optional().label("Status"),
-      primaryReporting: Joi.number().required().label("Primary Reporting To"),
-      secondaryReporting: Joi.number()
+  validateUpdateUserProfile = (date) => {
+    const schema = Joi.object({
+      name: Joi.string().optional().max(100).messages({
+        "string.max": "Name must be less than 100 characters",
+      }),
+      email: Joi.string().email().optional().messages({
+        "string.email": "Email must be a valid email",
+      }),
+      contactNo: Joi.string()
+        .pattern(/^\d{10,15}$/)
         .optional()
-        .label("Secondary Reporting To"),
-      designationId: Joi.number().required().label("Designation ID"),
-      roleId: Joi.number().required().label("Role ID"),
-      profilePicture: Joi.binary().optional().label("Profile Picture"),
-      isDeleted: Joi.boolean().optional(),
-      isNewUser: Joi.boolean().optional(),
-      profile: Joi.object()
-        .keys({
-          contactNo: Joi.string().optional().label("Contact Number"),
-          emergencyContact: Joi.string().optional().label("Emergency Contact"),
-          cnicNo: Joi.string().optional().label("CNIC"),
-          dateOfBirth: Joi.date().iso().optional().label("Date of Birth"),
-          city: Joi.string().optional().label("City"),
-          gender: Joi.string()
-            .valid("Male", "Female", "Other")
-            .optional()
-            .label("Gender"),
-          address: Joi.string().optional().label("Address"),
-          joinedDate: Joi.date().iso().optional().label("Joined Date"),
-          employeeType: Joi.string().optional().label("Employee Type"),
-          department: Joi.string().optional().label("Department"),
-          totalExperience: Joi.string().optional().label("Total Experience"),
-          maritalStatus: Joi.string().optional().label("Marital Status"),
-          aboutMe: Joi.string().optional().label("About Me"),
-          position: Joi.string().optional().label("Position"),
-          emergencyContactName: Joi.string()
-            .optional()
-            .label("Emergency Contact Name"),
-
-          isDeleted: Joi.boolean().optional(),
-        })
+        .messages({
+          "string.pattern.base": "Contact number must be 10-15 digits",
+        }),
+      address: Joi.string().optional().max(255).messages({
+        "string.max": "Address must be less than 255 characters",
+      }),
+      city: Joi.string().optional().max(100).messages({
+        "string.max": "City name must be less than 100 characters",
+      }),
+      profileImage: Joi.string().optional().uri().messages({
+        "string.uri": "Profile image must be a valid URL",
+      }),
+      cnicNo: Joi.string()
+        .pattern(/^\d{13}$/)
         .optional()
-        .label("Profile"),
+        .messages({
+          "string.pattern.base": "CNIC number must be exactly 13 digits",
+          "any.required": "CNIC number is required",
+        }),
+      cnicPicture: Joi.string().uri().optional().messages({
+        "string.uri": "CNIC picture must be a valid URL",
+        "any.required": "CNIC picture is required",
+      }),
+      isDeleted: Joi.boolean().default(false).messages({
+        "boolean.base": "isDeleted must be true or false",
+      }),
     });
 
-    return this.validate(schema, user);
-  };
-
-  validateUpdateUser = (user) => {
-    const schema = Joi.object().keys({
-      id: Joi.number().optional().label("ID"),
-      firstName: Joi.string().optional().label("First Name"),
-      lastName: Joi.string().optional().label("Last Name"),
-      email: Joi.string().email().optional().label("Email"),
-      password: Joi.string().optional().label("Password"),
-      shiftTime: Joi.string().optional().label("Shift Time"),
-      status: Joi.string().optional().label("Status"),
-      reportingTo: Joi.number().optional().label("Reporting To"),
-      designationId: Joi.number().optional().label("Designation ID"),
-      roleId: Joi.number().optional().label("Role ID"),
-      isDeleted: Joi.boolean().optional(),
-      secondaryReporting: Joi.number().optional(),
-      primaryReporting: Joi.number().optional(),
-      profile: Joi.object()
-        .keys({
-          contactNo: Joi.string().optional().label("Contact Number"),
-          emergencyContact: Joi.string().optional().label("Emergency Contact"),
-          cnicNo: Joi.string().optional().label("CNIC"),
-          dateOfBirth: Joi.date().iso().optional().label("Date of Birth"),
-          city: Joi.string().optional().label("City"),
-          gender: Joi.string()
-            .valid("Male", "Female", "Other")
-            .optional()
-            .label("Gender"),
-          address: Joi.string().optional().label("Address"),
-          joinedDate: Joi.date().iso().optional().label("Joined Date"),
-          employeeType: Joi.string().optional().label("Employee Type"),
-          department: Joi.string().optional().label("Department"),
-          totalExperience: Joi.string().optional().label("Total Experience"),
-          maritalStatus: Joi.string().optional().label("Marital Status"),
-          aboutMe: Joi.string().optional().label("About Me"),
-          position: Joi.string().optional().label("Position"),
-          emergencyContactName: Joi.string()
-            .optional()
-            .label("Emergency Contact Name"),
-
-          isDeleted: Joi.boolean().optional(),
-        })
-        .optional(),
-    });
-
-    return this.validate(schema, user);
+    return schema.validate(data, { abortEarly: false });
   };
 }
 

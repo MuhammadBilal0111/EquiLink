@@ -1,34 +1,154 @@
-import React, { useState } from "react";
-import { IoMdCloseCircle } from "react-icons/io";
+import React, { useEffect, useState } from "react";
+import { IoMdCloseCircle} from "react-icons/io";
+import { Loader2 } from "lucide-react";
+import {axiosInstance} from "./../lib/axios.js";
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
+import { toast } from "sonner";
+import { useDispatch } from 'react-redux';
+import { profileActions } from './../store/index.js';
+import { useSelector } from "react-redux";
 
 const Profile = () => {
+
+  const dispatch = useDispatch()
+
+  const {authUser} = useSelector((store)=>store.userStore);
+
+
+  const getProfile = async()=>{
+    try{
+      console.log(authUser, "from profile")
+      const res = await axiosInstance.get(`/users/get-userProfile/${authUser.user.id}`,{
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
+      let profile = res.data.data.at(-1)
+      dispatch(profileActions.setProfile(profile))
+      setProfileImage(res.data.data.at(-1).profileImage);
+      setFormData({
+        ...formData,
+        contactNo: profile.contactNo,
+        city: profile.city,
+        address: profile.address,
+        cnicNo: profile.cnicNo
+      })
+
+  }
+  catch(err){
+      console.log("error in getting profile:", err)              
+  }
+  }
+
+  useEffect(()=>{
+    getProfile()
+    
+  },[])
+
+  const {profile} = useSelector((store)=>store.profileStore);
+  console.log("user profile",profile)
+
+
+
+  const [isUpdatingProfile, setisUpdatingProfile] = useState(false)
   const [profileImage, setProfileImage] = useState(null);
   const [cnicImages, setCnicImages] = useState([]);
+  const [cnicFiles, setCnicFiles] = useState([]); // To store actual file objects
+  const [formData, setFormData] = useState({
+    name: authUser.user.name,
+    email: authUser.user.email,
+    cnicNo:"",
+    contactNo:"",
+    address: "",
+    city: "",
+  });
+
+
 
   const handleProfileImageChange = (event) => {
     if (event.target.files.length > 0) {
-      setProfileImage(URL.createObjectURL(event.target.files[0]));
+      const file = event.target.files[0];
+      setProfileImage(URL.createObjectURL(file));
+      setFormData((prev) => ({ ...prev, profileImage: file })); // Store actual file
     }
   };
 
   const removeProfileImage = () => {
     setProfileImage(null);
+    setFormData((prev) => ({ ...prev, profileImage: null }));
   };
 
   const handleCnicImageChange = (event) => {
     if (event.target.files.length > 0) {
-      setCnicImages([...cnicImages, ...Array.from(event.target.files).map(file => URL.createObjectURL(file))]);
+      if (event.target.files.length > 2) {
+        alert("You can only upload a maximum of 2 images.");
+        return;
+      }
+      const files = Array.from(event.target.files);
+      setCnicFiles(files);
+      setCnicImages(files.map((file) => URL.createObjectURL(file))); // Preview
     }
   };
 
   const removeCnicImage = (index) => {
     setCnicImages(cnicImages.filter((_, i) => i !== index));
+    setCnicFiles(cnicFiles.filter((_, i) => i !== index));
   };
 
+  const handleSubmit = async () => {
+    console.log("button clicked");
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("email", formData.email);
+    data.append("cnicNo", formData.cnicNo);
+    data.append("contactNo", formData.contactNo);
+    data.append("address", formData.address);
+    data.append("city", formData.city);
+
+    if (formData.profileImage) {
+        data.append("profileImage", formData.profileImage);
+    }
+
+    // Ensure CNIC images exist and assign them separately
+    if (cnicFiles.length > 0) {
+        data.append("cnicFrontImage", cnicFiles[0]); // First image as Front CNIC
+    }
+    if (cnicFiles.length > 1) {
+        data.append("cnicBackImage", cnicFiles[1]); // Second image as Back CNIC
+    }
+
+    try {
+        setisUpdatingProfile(true)
+        const response = await axiosInstance.post("/users/create-userProfile", data, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        console.log("Response:", response.data);
+        dispatch(profileActions.setProfile(response.data.data))
+        toast.success("Profile updated successfully!")
+
+    } catch (error) {
+      toast.error("Something went wrong")
+      setisUpdatingProfile(false)
+      console.log(error)
+    }
+    finally{
+      setisUpdatingProfile(false)
+    }
+};
+
+
+  if(isUpdatingProfile){
+    return(
+      <div className="m-auto"><Loader2 size={50}></Loader2></div>
+    )
+  }
+
   return (
-    <>
+      <>
 
       {/* Main Content */}
       <div className="w-4/5 p-8">
@@ -37,7 +157,7 @@ const Profile = () => {
             Logout
           </button>
         </div>
-        <h2 className="text-2xl">Welcome, Simrah!</h2>
+        <h2 className="text-2xl">Welcome, {authUser.user?.name || "Jhon"}!</h2>
 
         {/* Profile Section */}
         <div className="flex flex-col justify-center items-center mt-8 gap-7 border-t border-t-[#3F3F3F] py-4">
@@ -45,7 +165,7 @@ const Profile = () => {
             <div className="w-30 h-30 rounded-full bg-gray-600 flex items-center justify-center cursor-pointer">
               {profileImage ? (
                 <>
-                  <img src={profileImage} alt="Profile" className="w-full h-full object-cover rounded-full" />
+                  <img src={profileImage || profile.profileImage} alt="Profile" className="w-full h-full object-cover rounded-full" />
                   <IoMdCloseCircle className="absolute top-0 right-2 m-2 text-xl text-white cursor-pointer" onClick={removeProfileImage} />
                 </>
               ) : (
@@ -56,16 +176,16 @@ const Profile = () => {
           <input type="file" id="upload-profile" className="hidden" onChange={handleProfileImageChange} />
           
           <div className="flex justify-around gap-x-14">
-            <InputField label="Full Name" placeholder="Enter your full name" className="w-100" />
-            <InputField label="Email Address" placeholder="Enter your email address" className="w-100" />
+            <InputField label="Full Name" placeholder="Enter your full name" className="w-100" value={formData.name} handler={(e) => setFormData({ ...formData, name: e.target.value })} />
+            <InputField label="Email Address" placeholder="Enter your email address" className="w-100" value={formData.email} handler={(e) => setFormData({ ...formData, email: e.target.value })}/>
           </div>
           <div className="flex justify-around gap-x-14">
-            <InputField label="Phone Number" placeholder="Enter your phone number" className="w-100" />
-            <InputField label="CNIC Number" placeholder="Enter your CNIC number" className="w-100" />
+            <InputField label="Phone Number" placeholder="Enter your phone number" className="w-100" value={formData.contactNo} handler={(e) => setFormData({ ...formData, contactNo: e.target.value})}/>
+            <InputField label="CNIC Number" placeholder="Enter your CNIC number" className="w-100" value={formData.cnicNo} handler={(e) => setFormData({ ...formData, cnicNo: e.target.value })} />
           </div>
           <div className="flex justify-around gap-x-14">
-            <InputField label="Residential Address" placeholder="Enter your address" className="w-100" />
-            <InputField label="City" placeholder="Enter your city" className="w-100" />
+            <InputField label="Residential Address" placeholder="Enter your address" className="w-100" value={formData.address} handler={(e) => setFormData({ ...formData, address: e.target.value })}/>
+            <InputField label="City" placeholder="Enter your city" className="w-100" value={formData.city} handler={(e) => setFormData({ ...formData, city: e.target.value })}/>
           </div>
 
           {/* CNIC Upload */}
@@ -92,7 +212,7 @@ const Profile = () => {
             </div>
           </div>
           
-          <Button name="Save Changes" className="h-9 mt-16" />
+          <button name="Save Changes" className="h-9 mt-4 py-1.5 text-white text-center text-sm rounded-lg w-80 bg-gradient-to-r from-[#D1B0D4] via-[#8B68AD] to-[#5A3592] cursor-pointer" onClick={handleSubmit}>Save changes</button>
           </div>
         </div>
 
@@ -108,9 +228,11 @@ const Profile = () => {
             <Button name="Save Changes" className="h-9 mt-4" />
           </div>
         </div>
-      </div>
-    </>
+      </div>
+    </>
+
   );
 };
 
 export default Profile;
+

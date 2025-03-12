@@ -1,32 +1,16 @@
 const express = require("express");
-const router = express.Router();
-const UserController = require("../controllers/UserController.js");
-const {
-  authorize,
-  authMiddleware,
-} = require("../middlewares/auth.middleware.js");
+const UserController = require("../controllers/User.controller.js");
+const uploadMiddleware = require("../middlewares/multer.middleware.js");
 
-router.get(
-  "/get-user",
-  // authorize("admin"),
-  UserController.getUserById
-);
-router.get("/get-all-users", UserController.getAllUsers);
+const router = express.Router();
+
 router.post(
-  "/create-user-with-profile",
-  // authorize("admin"),
-  UserController.createUserWithProfile
+  "/create-userProfile",
+  uploadMiddleware,
+  UserController.createUserProfile
 );
-router.post("/create-user", UserController.createUser);
-router.patch(
-  "/update-user",
-  // authorize("admin"),
-  UserController.updateUser
-);
-router.delete(
-  "/delete-user/:id",
-  // authorize("admin"),
-  UserController.deleteUser
-);
+
+router.get("/get-userProfile/:id?", UserController.getUserProfile);
+router.patch("/update-userProfile", UserController.updateUserProfile);
 
 module.exports = router;
