@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { TbLayoutDashboardFilled } from "react-icons/tb";
-import { MdWallet } from "react-icons/md";
-import { BiSolidMessageSquareDetail } from "react-icons/bi";
-import { FaUser } from "react-icons/fa";
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoMdCloseCircle} from "react-icons/io";
+import { Loader2 } from "lucide-react";
 import {axiosInstance} from "./../lib/axios.js";
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
@@ -18,7 +15,6 @@ const Profile = () => {
 
   const {authUser} = useSelector((store)=>store.userStore);
 
-  let link = ""
 
   const getProfile = async()=>{
     try{
@@ -33,7 +29,7 @@ const Profile = () => {
       setProfileImage(res.data.data.at(-1).profileImage);
       setFormData({
         ...formData,
-        phone: profile.contactNo,
+        contactNo: profile.contactNo,
         city: profile.city,
         address: profile.address,
         cnicNo: profile.cnicNo
@@ -55,7 +51,7 @@ const Profile = () => {
 
 
 
-
+  const [isUpdatingProfile, setisUpdatingProfile] = useState(false)
   const [profileImage, setProfileImage] = useState(null);
   const [cnicImages, setCnicImages] = useState([]);
   const [cnicFiles, setCnicFiles] = useState([]); // To store actual file objects
@@ -63,7 +59,7 @@ const Profile = () => {
     name: authUser.user.name,
     email: authUser.user.email,
     cnicNo:"",
-    phone:"",
+    contactNo:"",
     address: "",
     city: "",
   });
@@ -106,7 +102,7 @@ const Profile = () => {
     data.append("name", formData.name);
     data.append("email", formData.email);
     data.append("cnicNo", formData.cnicNo);
-    data.append("phone", formData.phone);
+    data.append("contactNo", formData.contactNo);
     data.append("address", formData.address);
     data.append("city", formData.city);
 
@@ -123,6 +119,7 @@ const Profile = () => {
     }
 
     try {
+        setisUpdatingProfile(true)
         const response = await axiosInstance.post("/users/create-userProfile", data, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -135,35 +132,32 @@ const Profile = () => {
 
     } catch (error) {
       toast.error("Something went wrong")
+      setisUpdatingProfile(false)
       console.log(error)
+    }
+    finally{
+      setisUpdatingProfile(false)
     }
 };
 
 
+  if(isUpdatingProfile){
+    return(
+      <div className="m-auto"><Loader2 size={50}></Loader2></div>
+    )
+  }
+
   return (
-    <div className="w-full bg-[#0A0A0A] flex text-white">
-      {/* Sidebar */}
-      <div className="w-1/5 bg-[#0A0A0A] border-r-1 border-r-[#3F3F3F] p-6 flex flex-col gap-6">
-        <img src="FullLogo.png" alt="Logo" className="w-[120px] h-[30px] ml-6" />
-        <nav className="flex flex-col gap-10 mt-24">
-          <a href="#" className="hover:text-gray-300 flex items-center gap-8">
-            <TbLayoutDashboardFilled size={22} /> Dashboard
-          </a>
-          <a href="#" className="hover:text-gray-300 flex items-center gap-8">
-            <MdWallet size={22} /> Wallet
-          </a>
-          <a href="#" className="hover:text-gray-300 flex items-center gap-8">
-            <BiSolidMessageSquareDetail size={22} /> Messages
-          </a>
-          <a href="#" className="hover:text-gray-300 flex items-center gap-8">
-            <FaUser size={22} /> Profile
-          </a>
-        </nav>
-      </div>
+      <>
 
       {/* Main Content */}
       <div className="w-4/5 p-8">
-        <h2 className="text-2xl">Welcome, {authUser.user?.name || "Jhon"}</h2>
+        <div className="flex justify-end items-center">
+          <button className="bg-[#262626] border text-md border-[#222124] text-white px-8 py-1 rounded-xl">
+            Logout
+          </button>
+        </div>
+        <h2 className="text-2xl">Welcome, {authUser.user?.name || "Jhon"}!</h2>
 
         {/* Profile Section */}
         <div className="flex flex-col justify-center items-center mt-8 gap-7 border-t border-t-[#3F3F3F] py-4">
@@ -180,45 +174,63 @@ const Profile = () => {
             </div>
           </label>
           <input type="file" id="upload-profile" className="hidden" onChange={handleProfileImageChange} />
-
-          <div className="grid grid-cols-2 gap-6">
-            <InputField label="Full Name" value={formData.name} handler={(e) => setFormData({ ...formData, name: e.target.value })} />
-            <InputField label="Email Address" value={formData.email} handler={(e) => setFormData({ ...formData, email: e.target.value })} />
+          
+          <div className="flex justify-around gap-x-14">
+            <InputField label="Full Name" placeholder="Enter your full name" className="w-100" value={formData.name} handler={(e) => setFormData({ ...formData, name: e.target.value })} />
+            <InputField label="Email Address" placeholder="Enter your email address" className="w-100" value={formData.email} handler={(e) => setFormData({ ...formData, email: e.target.value })}/>
           </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <InputField label="Phone Number" value={formData.phone} handler={(e) => setFormData({ ...formData, phone: e.target.value})} />
-            <InputField label="CNIC Number" value={formData.cnicNo} handler={(e) => setFormData({ ...formData, cnicNo: e.target.value })} />
+          <div className="flex justify-around gap-x-14">
+            <InputField label="Phone Number" placeholder="Enter your phone number" className="w-100" value={formData.contactNo} handler={(e) => setFormData({ ...formData, contactNo: e.target.value})}/>
+            <InputField label="CNIC Number" placeholder="Enter your CNIC number" className="w-100" value={formData.cnicNo} handler={(e) => setFormData({ ...formData, cnicNo: e.target.value })} />
           </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <InputField label="Residential Address" value={formData.address} handler={(e) => setFormData({ ...formData, address: e.target.value })} />
-            <InputField label="City" value={formData.city} handler={(e) => setFormData({ ...formData, city: e.target.value })} />
+          <div className="flex justify-around gap-x-14">
+            <InputField label="Residential Address" placeholder="Enter your address" className="w-100" value={formData.address} handler={(e) => setFormData({ ...formData, address: e.target.value })}/>
+            <InputField label="City" placeholder="Enter your city" className="w-100" value={formData.city} handler={(e) => setFormData({ ...formData, city: e.target.value })}/>
           </div>
 
           {/* CNIC Upload */}
-          <div className="flex flex-col">
+          <div className="flex w-[90%] items-center justify-between">
+          <div>
             <h2 className="text-sm mb-2">Upload CNIC</h2>
-            <label htmlFor="upload-cnic">
-              <div className="border rounded-xl border-dotted border-primary bg-blue-100 h-[80px] w-[80px] cursor-pointer hover:shadow-md flex items-center justify-center">
-                <h2 className="text-2xl text-primary">+</h2>
-              </div>
-            </label>
-            <input type="file" multiple id="upload-cnic" className="hidden" onChange={handleCnicImageChange} />
-            <div className="grid grid-cols-2 gap-5">
-              {cnicImages.map((image, index) => (
-                <div key={index} className="relative">
-                  <IoMdCloseCircle className="absolute top-0 right-0 m-2 text-xl text-white cursor-pointer" onClick={() => removeCnicImage(index)} />
-                  <img src={image} className="h-[80px] w-[80px] object-cover rounded-xl" alt="CNIC" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-5 items-center">
+              <label htmlFor="upload-cnic">
+                <div className="border rounded-xl border-dotted border-primary bg-blue-100 h-[80px] w-[80px] cursor-pointer hover:shadow-md flex items-center justify-center">
+                  <h2 className="text-2xl text-primary">+</h2>
                 </div>
+              </label>
+              <input type="file" multiple id="upload-cnic" className="hidden" onChange={handleCnicImageChange} />
+              {cnicImages.map((image, index) => (
+                <div className="relative w-[80px] h-[80px]">
+                <img src={image} className="h-full w-full object-cover rounded-xl" alt="CNIC" />
+                <IoMdCloseCircle
+                  className="absolute top-[-8px] right-[-8px] text-xl text-white cursor-pointer"
+                  onClick={() => removeCnicImage(index)}
+                />
+              </div>
+              
               ))}
             </div>
           </div>
-          {/* <Button name="Save Changes" className="h-9 mt-4" onClick={handleSubmit} /> */}
+          
           <button name="Save Changes" className="h-9 mt-4 py-1.5 text-white text-center text-sm rounded-lg w-80 bg-gradient-to-r from-[#D1B0D4] via-[#8B68AD] to-[#5A3592] cursor-pointer" onClick={handleSubmit}>Save changes</button>
+          </div>
         </div>
-      </div>
-    </div>
+
+        {/* Password Settings */}
+        <h3 className="text-lg ml-8 mt-14 mb-8">Password Settings</h3>
+        <div className="flex flex-col justify-center items-center gap-7">
+          <div className="flex justify-around gap-x-14">
+            <InputField label="Old Password" placeholder="Enter your old password" className="w-100" />
+            <InputField label="New Password" placeholder="Enter your new password" className="w-100" />
+          </div>
+          <div className="flex items-center gap-x-36">
+            <InputField label="Confirm New Password" placeholder="Re-enter new password" className="w-100" />
+            <Button name="Save Changes" className="h-9 mt-4" />
+          </div>
+        </div>
+      </div>
+    </>
+
   );
 };
 
