@@ -1,6 +1,6 @@
 const BaseController = require("./Base.controller.js");
 const db = require("../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserRepo = require("../repos/UserRepo.js");
@@ -14,7 +14,6 @@ const transporter = require("../utils/email.js");
 const { constants } = require("../utils/constant.js");
 
 class AuthController extends BaseController {
-
   signToken = (userResponse, res) => {
     const token = jwt.sign({ data: userResponse }, jwtSecret, {
       expiresIn: constants.expiresIn,
@@ -120,19 +119,7 @@ class AuthController extends BaseController {
     }
 
     const customQuery = {
-      email,
-      include: [
-        {
-          model: db.Role,
-          as: "role",
-          attributes: ["name"],
-        },
-        {
-          model: db.Designation,
-          as: "designation",
-          attributes: ["name"],
-        },
-      ],
+      where: { email },
     };
 
     const user = await UserRepo?.findUserWithInclude(customQuery);
@@ -157,7 +144,6 @@ class AuthController extends BaseController {
       user?.id
     );
 
-    user.isNewUser = false;
 
     const userObject = updatedUser.toJSON();
 

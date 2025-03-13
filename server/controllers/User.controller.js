@@ -6,6 +6,7 @@ const UserRepo = require("../repos/UserRepo.js");
 const BlobStorageService = require("../services/BlobStorageService.js");
 
 class UserController extends BaseController {
+  
   createUserProfile = async (req, res) => {
     const userId = req.user.id;
     const validationResult = validateCreateUserProfile(req.body);
