@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoMdCloseCircle} from "react-icons/io";
 import { Loader2 } from "lucide-react";
 import {axiosInstance} from "./../lib/axios.js";
@@ -47,7 +47,6 @@ const Profile = () => {
   },[])
 
   const {profile} = useSelector((store)=>store.profileStore);
-  console.log("user profile",profile)
 
 
 
@@ -63,6 +62,12 @@ const Profile = () => {
     address: "",
     city: "",
   });
+
+
+  
+  const oldPassword = useRef(null)
+  const newPassword = useRef(null)
+  const confirmPassword = useRef(null)
 
 
 
@@ -140,6 +145,35 @@ const Profile = () => {
     }
 };
 
+
+  const handlePasswordChange = async()=>{
+    
+    if(newPassword.current.value!=confirmPassword.current.value){
+      toast.error("Password and confirm password must be same")
+      return;
+    }
+    const data = {
+      email: authUser.user?.email,
+      oldPassword: oldPassword.current.value,
+      newPassword: newPassword.current.value
+    }
+    try{
+      const res = await axiosInstance.post("/auth/change-password",data)
+      console.log(res.data)
+      if(res.success == true){
+        toast.success("Password reset successfully")
+        oldPassword.current.value=""
+        newPassword.current.value=""
+        confirmPassword.current.value=""
+      }
+      else{
+        toast.error("Something went wrong")
+      }
+    }
+    catch(err){
+      toast.error("Error updating password")
+    }
+  }
 
   if(isUpdatingProfile){
     return(
@@ -220,12 +254,12 @@ const Profile = () => {
         <h3 className="text-lg ml-8 mt-14 mb-8">Password Settings</h3>
         <div className="flex flex-col justify-center items-center gap-7">
           <div className="flex justify-around gap-x-14">
-            <InputField label="Old Password" placeholder="Enter your old password" className="w-100" />
-            <InputField label="New Password" placeholder="Enter your new password" className="w-100" />
+            <InputField label="Old Password" placeholder="Enter your old password" className="w-100" ref={oldPassword}/>
+            <InputField label="New Password" placeholder="Enter your new password" className="w-100" ref={newPassword}/>
           </div>
           <div className="flex items-center gap-x-36">
-            <InputField label="Confirm New Password" placeholder="Re-enter new password" className="w-100" />
-            <Button name="Save Changes" className="h-9 mt-4" />
+            <InputField label="Confirm New Password" placeholder="Re-enter new password" className="w-100" ref={confirmPassword}/>
+            <Button name="Save Changes" className="h-9 mt-4" handler={handlePasswordChange}/>
           </div>
         </div>
       </div>
