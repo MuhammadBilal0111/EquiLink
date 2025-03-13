@@ -19,7 +19,7 @@ const Dashboard = () => {
         {/* Pitches Section */}
         <div className="mt-6 flex justify-between border-t border-t-[#3F3F3F] py-4">
           <h3 className="text-lg">Your Pitches</h3>
-          <Link to={'/addpitch'}>
+          <Link to={'/add-pitch'}>
           <button className="mt-2 cursor-pointer text-sm bg-gradient-to-r from-[#D1B0D4] via-[#8B68AD] to-[#5A3592] px-10 py-1.5 rounded-sm">
             + Add New Pitch
           </button>
