@@ -93,10 +93,6 @@ class AuthController extends BaseController {
 
     if (!user) return this.errorResponse(res, "User not created", 400);
 
-
-
-    
-
     user.password = undefined;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
@@ -123,19 +119,7 @@ class AuthController extends BaseController {
     }
 
     const customQuery = {
-      email,
-      include: [
-        {
-          model: db.Role,
-          as: "role",
-          attributes: ["name"],
-        },
-        {
-          model: db.Designation,
-          as: "designation",
-          attributes: ["name"],
-        },
-      ],
+      where: { email },
     };
 
     const user = await UserRepo?.findUserWithInclude(customQuery);
@@ -160,7 +144,6 @@ class AuthController extends BaseController {
       user?.id
     );
 
-    user.isNewUser = false;
 
     const userObject = updatedUser.toJSON();
 
