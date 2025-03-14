@@ -18,10 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "investor",
       });
 
-      Startup.belongsTo(models.Category, {
-        foreignKey: "categoryId",
-        as: "category",
-      });
+     
     }
   }
   Startup.init(
