@@ -37,9 +37,9 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={!authUser ? <LandingPage/> : <Navigate to="/home"/>}/>
+        <Route path="/" element={!authUser ? <LandingPage/> : <HomePage/>}/>
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to="/" />}/>
-        <Route path="/home" element={authUser ? <HomePage /> : <Navigate to="/login" />}/>
+        {/* <Route path="/home" element={authUser ? <HomePage /> : <Navigate to="/login" />}/> */}
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/home" />}/>
         <Route path="/add-pitch" element={authUser ? <AddPitch /> : <Navigate to="/login" />}/>
       </Routes>

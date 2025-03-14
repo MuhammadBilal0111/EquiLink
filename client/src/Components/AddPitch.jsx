@@ -1,6 +1,6 @@
 
 import React, { useState, useRef } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
 import { IoMdCloseCircle } from "react-icons/io";
@@ -8,8 +8,13 @@ import TextArea from "./elements/TextArea";
 import SelectField from "./elements/SelectField";
 import axios from "axios";
 import { axiosInstance } from "@/lib/axios";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const AddPitch = () => {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
+
     const [imageFiles, setImageFiles] = useState([]);
     const [videoFile, setVideoFile] = useState(null);
     const [pdfFile, setPdfFile] = useState(null);
@@ -30,14 +35,15 @@ const AddPitch = () => {
         setFiles((prev) => prev.filter((_, i) => i !== index));
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Gather form data
         const formData = new FormData();
         formData.append("title", nameRef.current.value);
-        formData.append("category", category);
+        formData.append("categoryName", category);
         formData.append("fundingGoal", askForProjectRef.current.value);
-        formData.append("equity", equityRef.current.value );
+        formData.append("equity", equityRef.current.value);
         formData.append("description", projectDescriptionRef.current.value);
 
         formData.append("projectFile", pdfFile);
@@ -47,40 +53,53 @@ const AddPitch = () => {
             formData.append("pitchImages", image);
         });
 
-        // const imageArray = [];
-
-        // imageFiles.forEach((image) => {
-        //     imageArray.push(URL.createObjectURL(image));
-        // });
-
-
-
-        // formData.append("projectFile", URL.createObjectURL(pdfFile));
-        // formData.append("pitchVideo", URL.createObjectURL(videoFile));
-        // formData.append("pitchImages", imageArray)
-
-
-
         for (let [key, value] of formData.entries()) {
             console.log(key, value);
         }
 
-        
         try {
+            setLoading(true);
             const response = await axiosInstance.post("/startups/create-startup", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            console.log("Formdata after hit:", formData);
-
             console.log("Response:", response.data);
-            console.log("Pitch submitted successfully!");
+            if (response.data.status == true) {
+                setLoading(false);
+                toast.success("Pitch submitted successfully!");
+                nameRef.current.value = null
+                projectDescriptionRef.current.value = null
+                equityRef.current.value = null
+                askForProjectRef.current.value = null
+                setCategory("")
+                setImageFiles([])
+                setPdfFile(null)
+                setVideoFile(null)
+                navigate('/')
+            }
+            else {
+                toast.error("Something went wrong!");
+            }
+
         } catch (error) {
             console.error("Error submitting pitch:", error);
-            console.log("Error submitting pitch. Please try again.");
+            toast.error("Error submitting pitch. Please try again.");
+        }
+        finally{
+            setLoading(false)
         }
     };
+
+    
+    if (loading) {
+        return (
+            <div className="flex bg-[#0A0A0A] justify-center items-center min-h-screen">
+                <Loader2 size={50} className="animate-spin text-white" />
+            </div>
+        );
+    }
+    
 
     return (
         <div className="w-full bg-[#0A0A0A] flex text-white p-2">
