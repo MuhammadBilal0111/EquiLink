@@ -16,7 +16,6 @@ const AddPitch = () => {
 
     // Refs for form fields
     const nameRef = useRef(null);
-    // const categoryRef = useRef(null);
     const [category, setCategory] = useState("");
     const askForProjectRef = useRef(null);
     const equityRef = useRef(null);
@@ -33,26 +32,12 @@ const AddPitch = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // console.log("Title:", nameRef.current.value);
-        // // console.log("Category:", categoryRef.current.value);
-        // console.log("Category:", category);
-        // console.log("Funding Goal:", askForProjectRef.current.value);
-        // console.log("Equity:", equityRef.current.value);
-        // console.log("Description:", projectDescriptionRef.current.value);
-
-        // console.log("PDF File:", URL.createObjectURL(pdfFile));
-        // console.log("Video File:", URL.createObjectURL(videoFile));
-        // imageFiles.forEach((image, index) => {
-        //     console.log("Image Files:", URL.createObjectURL(image));
-        // });
-
         // Gather form data
         const formData = new FormData();
         formData.append("title", nameRef.current.value);
         formData.append("category", category);
         formData.append("fundingGoal", askForProjectRef.current.value);
-        formData.append("equity", equityRef.current.value);
+        formData.append("equity", equityRef.current.value );
         formData.append("description", projectDescriptionRef.current.value);
 
         formData.append("projectFile", pdfFile);
