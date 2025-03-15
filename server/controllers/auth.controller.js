@@ -50,11 +50,11 @@ class AuthController extends BaseController {
       return this.errorResponse(res, "User not found", 400);
     }
 
-    // const passwordMatch = await bcrypt.compare(password, user?.password);
+    const passwordMatch = await bcrypt.compare(password, user?.password);
 
-    // if (!passwordMatch) {
-    //   return this.errorResponse(res, "Invalid credentials", 400);
-    // }
+    if (!passwordMatch) {
+      return this.errorResponse(res, "Invalid credentials", 400);
+    }
 
     user.password = undefined;
     user.resetPasswordToken = undefined;
@@ -92,6 +92,10 @@ class AuthController extends BaseController {
     const user = await UserRepo?.createUser(otherFields);
 
     if (!user) return this.errorResponse(res, "User not created", 400);
+
+
+
+    
 
     user.password = undefined;
     user.resetPasswordToken = undefined;
@@ -313,6 +317,11 @@ class AuthController extends BaseController {
 
     return this.successResponse(res, {}, "Password reset successfully");
   };
+
+
+  checkAuth = async (req,res)=>{
+    return this.successResponse(res, {user:req.user}, "Password reset successfully");
+  }
 }
 
 module.exports = new AuthController();

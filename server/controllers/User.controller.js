@@ -74,7 +74,7 @@ class UserController extends BaseController {
 
   getUserProfile = async (req, res) => {
     const userId = req.user.id;
-    console.log("tuype of useId : ", typeof userId);
+    console.log("type of useId : ", typeof userId);
     const id = req.params.id;
 
     const customQuery = {
@@ -101,6 +101,7 @@ class UserController extends BaseController {
       return this.errorResponse(res, "User profile not found", 400);
     }
 
+    console.log(userProfile)
     return this.successResponse(res, userProfile);
   };
 

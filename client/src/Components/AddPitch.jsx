@@ -41,7 +41,7 @@ const AddPitch = () => {
                     </div>
 
                     <div className="flex gap-x-16">
-                        <InputField label="Ask for Project ($)" placeholder="Enter your ask for project" className="w-115" type="number"/>
+                        <InputField label="Ask for Project (coins)" placeholder="Enter your ask for project" className="w-115" type="number"/>
                         <InputField label="Equity (%)" placeholder="Enter percentage of equity you offer" className="w-115" type="number" />
                     </div>
 

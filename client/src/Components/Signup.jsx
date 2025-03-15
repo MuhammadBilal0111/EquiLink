@@ -37,10 +37,10 @@ const Signup = () => {
             toast.error("Please fill all the fields")
             return;
         }
-        const data = { email,password,contactNo,name, role}
+        const data = { email,password,name, role}
 
         if(data.password != cPasswordRef.current.value){
-            console.log("Password and confirmPassword are not same")
+            console.log("Password and confirm Password are not same")
             toast.error("Password and Confirm Password do not match");
             return;
         }
