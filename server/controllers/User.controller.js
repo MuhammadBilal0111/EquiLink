@@ -95,7 +95,7 @@ class UserController extends BaseController {
         {
           model: db.User,
           as: "user",
-          attributes: ["id", "name", "email", "role"],
+          attributes: ["id", "name", "email", "role","proVersion"],
         },
       ],
     };
