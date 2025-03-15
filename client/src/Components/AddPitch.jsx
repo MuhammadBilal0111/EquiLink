@@ -6,7 +6,6 @@ import Button from "./elements/Button";
 import { IoMdCloseCircle } from "react-icons/io";
 import TextArea from "./elements/TextArea";
 import SelectField from "./elements/SelectField";
-import axios from "axios";
 import { axiosInstance } from "@/lib/axios";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -68,14 +67,14 @@ const AddPitch = () => {
             if (response.data.status == true) {
                 setLoading(false);
                 toast.success("Pitch submitted successfully!");
-                nameRef.current.value = null
-                projectDescriptionRef.current.value = null
-                equityRef.current.value = null
-                askForProjectRef.current.value = null
-                setCategory("")
-                setImageFiles([])
-                setPdfFile(null)
-                setVideoFile(null)
+                // nameRef.current.value = null
+                // projectDescriptionRef.current.value = null
+                // equityRef.current.value = null
+                // askForProjectRef.current.value = null
+                // setCategory("")
+                // setImageFiles([])
+                // setPdfFile(null)
+                // setVideoFile(null)
                 navigate('/')
             }
             else {
