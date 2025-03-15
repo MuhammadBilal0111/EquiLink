@@ -47,10 +47,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ARRAY(DataTypes.TEXT),
         allowNull: true,
       },
-      proVersion: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
+      
 
       equity: {
         type: DataTypes.STRING,
