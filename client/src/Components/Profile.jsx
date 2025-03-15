@@ -160,14 +160,11 @@ const Profile = () => {
     try{
       const res = await axiosInstance.post("/auth/change-password",data)
       console.log(res.data)
-      if(res.success == true){
+      if(res.data.status == true){
         toast.success("Password reset successfully")
         oldPassword.current.value=""
         newPassword.current.value=""
         confirmPassword.current.value=""
-      }
-      else{
-        toast.error("Something went wrong")
       }
     }
     catch(err){
