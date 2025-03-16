@@ -136,7 +136,7 @@ class AuthController extends BaseController {
 
     const hashedPassword = await bcrypt.hash(
       newPassword,
-      Number(process.env.SALT_ROUNDS)
+      Number(constants.saltRounds)
     );
 
     const updatedUser = await UserRepo?.updateUser(

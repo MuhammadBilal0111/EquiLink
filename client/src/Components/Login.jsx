@@ -40,6 +40,23 @@ const Login = () => {
           }
     }
 
+
+    const handleResetPassword = async ()=>{
+        const data = {email:emailRef.current.value}
+        if(!data.email){
+            toast.error("Email is required")
+            return;
+        }
+        try{
+            const res = await axiosInstance.post("/auth/forgot-password",data)
+            if(res.data.status == true){
+                toast.success("Email is sent to your account succesfully")
+            }
+        }catch(err){
+            toast.error("Something went wrong")
+        }
+    }
+
     return (
         <>
             <div className="relative bg-black h-screen w-full">
@@ -86,6 +103,7 @@ const Login = () => {
                             <div className="w-full flex flex-col justify-center items-center gap-3">
                                 <Button name="Login" handler={onSubmit} className="w-full max-w-80 max-h-[2rem]" />
                                 <p className='text-sm text-white'>Don’t have an account? <Link to={'/signUp'}>Signup</Link></p>
+                                <p className='text-sm text-white cursor-pointer mt-10' onClick={handleResetPassword}>Forgot Password</p>
                             </div>
                         </div>
                     </div>
