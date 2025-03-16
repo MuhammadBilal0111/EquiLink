@@ -67,14 +67,6 @@ const AddPitch = () => {
             if (response.data.status == true) {
                 setLoading(false);
                 toast.success("Pitch submitted successfully!");
-                // nameRef.current.value = null
-                // projectDescriptionRef.current.value = null
-                // equityRef.current.value = null
-                // askForProjectRef.current.value = null
-                // setCategory("")
-                // setImageFiles([])
-                // setPdfFile(null)
-                // setVideoFile(null)
                 navigate('/')
             }
             else {

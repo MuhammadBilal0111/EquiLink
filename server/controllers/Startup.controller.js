@@ -53,7 +53,7 @@ class StartupController extends BaseController {
     }
 
     const startup = await StartupRepo.createStartup({
-        entrepreneurId: userId,
+      entrepreneurId: userId,
       pitchImages: pitchImageUrls,
       pitchVideo: pitchVideoUrl,
       projectFile: projectFileUrl,
@@ -65,6 +65,16 @@ class StartupController extends BaseController {
     }
 
     return this.successResponse(res, startup, "Startup created successfully");
+  };
+
+  getAllStartups = async (req, res) => {
+    const startups = await StartupRepo.getStartups();
+
+    if (!startups) {
+      return this.errorResponse(res, "Failed to fetch startups", 400);
+    }
+
+    return this.successResponse(res, startups, "Startups fetched successfully");
   };
 }
 
