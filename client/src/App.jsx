@@ -9,6 +9,7 @@ import { axiosInstance } from "./lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { profileActions, userActions } from "./store";
+import AddPitch from "./Components/AddPitch";
 
 function App() {
 
@@ -36,10 +37,11 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={!authUser ? <LandingPage/> : <Navigate to="/home"/>}/>
+        <Route path="/" element={!authUser ? <LandingPage/> : <HomePage/>}/>
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to="/" />}/>
-        <Route path="/home" element={authUser ? <HomePage /> : <Navigate to="/login" />}/>
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/home" />}/>
+        {/* <Route path="/home" element={authUser ? <HomePage /> : <Navigate to="/login" />}/> */}
+        <Route path="/login" element={!authUser ? <LoginPage /> : <HomePage />}/>
+        <Route path="/add-pitch" element={authUser ? <AddPitch /> : <Navigate to="/login" />}/>
       </Routes>
     </>
   );

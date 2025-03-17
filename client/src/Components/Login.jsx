@@ -29,7 +29,7 @@ const Login = () => {
               dispatch(userActions.setUser(user)); // Dispatching user data to Redux store
               toast.success("Logged in successfully!")
               localStorage.setItem("user",user)
-              navigate('/home')
+              navigate('/')
             }
             else {
             toast.error("Something went wrong");

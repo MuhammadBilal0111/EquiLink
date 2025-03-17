@@ -58,13 +58,13 @@ class UserController extends BaseController {
       );
     }
 
-    const existingUserProfile = await UserProfileRepo.getUserProfiles({
-      where: { userId },
-    });
+    // const existingUserProfile = await UserProfileRepo.getUserProfiles({
+    //   where: { userId },
+    // });
 
-    if (existingUserProfile) {
-      return this.errorResponse(res, "User profile already exists", 400);
-    }
+    // if (existingUserProfile) {
+    //   return this.errorResponse(res, "User profile already exists", 400);
+    // }
 
     const userProfile = await UserProfileRepo.createUserProfile({
       ...otherFields,
@@ -95,7 +95,7 @@ class UserController extends BaseController {
         {
           model: db.User,
           as: "user",
-          attributes: ["id", "name", "email", "role"],
+          attributes: ["id", "name", "email", "role","proVersion"],
         },
       ],
     };
