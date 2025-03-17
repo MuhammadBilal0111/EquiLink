@@ -8,9 +8,10 @@ const connectWallet = async () => {
       alert("Make sure you have Metamask installed!");
       return;
     }
+
     const account = await ethereum.request({ method: "eth_requestAccounts" });
     const accountAddress = account[0]?.toLowerCase(); // get the wallet address
-    console.log("Metamask Address", accountAddress);
+    return accountAddress;
     // redux store to store the meta mask address
   } catch (error) {
     console.log(error);
