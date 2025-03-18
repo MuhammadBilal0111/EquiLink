@@ -1,7 +1,6 @@
 import React from "react";
 import Button from "./elements/Button";
 import { connectWallet } from "@/services/metaMask";
-import { useState } from "react";
 import { FaEthereum } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { profileActions } from "@/store";
