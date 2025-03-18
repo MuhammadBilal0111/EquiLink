@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  checkAuth,
   loginUser,
   signUpUser,
   changePassword,
@@ -17,5 +18,6 @@ router.post("/signup", signUpUser);
 router.post("/change-password", authMiddleware, changePassword);
 router.post("/forgot-password", forgetPassword);
 router.post("/reset-password", resetPasswordWithToken);
+router.get("/check-auth",authMiddleware,checkAuth)
 
 module.exports = router;

@@ -58,13 +58,13 @@ class UserController extends BaseController {
       );
     }
 
-    const existingUserProfile = await UserProfileRepo.getUserProfiles({
-      where: { userId },
-    });
+    // const existingUserProfile = await UserProfileRepo.getUserProfiles({
+    //   where: { userId },
+    // });
 
-    if (existingUserProfile) {
-      return this.errorResponse(res, "User profile already exists", 400);
-    }
+    // if (existingUserProfile) {
+    //   return this.errorResponse(res, "User profile already exists", 400);
+    // }
 
     const userProfile = await UserProfileRepo.createUserProfile({
       ...otherFields,
@@ -83,7 +83,7 @@ class UserController extends BaseController {
 
   getUserProfile = async (req, res) => {
     const userId = req.user.id;
-    console.log("tuype of useId : ", typeof userId);
+    console.log("type of useId : ", typeof userId);
     const id = req.params.id;
     console.log("tuype of useId : ", typeof id);
     console.log("id : ", id);
@@ -113,6 +113,7 @@ class UserController extends BaseController {
       return this.errorResponse(res, "User profile not found", 400);
     }
 
+    console.log(userProfile)
     return this.successResponse(res, userProfile);
   };
 

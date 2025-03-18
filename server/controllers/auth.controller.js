@@ -136,7 +136,7 @@ class AuthController extends BaseController {
 
     const hashedPassword = await bcrypt.hash(
       newPassword,
-      Number(process.env.SALT_ROUNDS)
+      Number(constants.saltRounds)
     );
 
     const updatedUser = await UserRepo?.updateUser(
@@ -300,6 +300,11 @@ class AuthController extends BaseController {
 
     return this.successResponse(res, {}, "Password reset successfully");
   };
+
+
+  checkAuth = async (req,res)=>{
+    return this.successResponse(res, {user:req.user}, "Password reset successfully");
+  }
 }
 
 module.exports = new AuthController();
