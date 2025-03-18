@@ -9,4 +9,8 @@ router.post(
   uploadMiddleware,
   StartupController.createStartup
 );
+
+router.get("/get-all-startups", StartupController.getAllStartups);
+
+
 module.exports = router;
