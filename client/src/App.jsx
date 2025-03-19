@@ -2,7 +2,6 @@ import "./App.css";
 import LoginPage from "./pages/LoginPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import LandingPage from "./pages/LandingPage.jsx"
-import Profile from "./components/Profile.jsx";
 import { Routes, Navigate, Route } from "react-router";
 import HomePage from "./pages/HomePage.jsx"
 import { axiosInstance } from "./lib/axios";
@@ -10,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { profileActions, userActions } from "./store";
 import AddPitch from "./Components/AddPitch";
+import Pitch from "./pages/Pitch";
 
 function App() {
 
@@ -39,9 +39,10 @@ function App() {
       <Routes>
         <Route path="/" element={!authUser ? <LandingPage/> : <HomePage/>}/>
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to="/" />}/>
-        {/* <Route path="/home" element={authUser ? <HomePage /> : <Navigate to="/login" />}/> */}
         <Route path="/login" element={!authUser ? <LoginPage /> : <HomePage />}/>
         <Route path="/add-pitch" element={authUser ? <AddPitch /> : <Navigate to="/login" />}/>
+        <Route path="/pitch/:id" element={authUser ? <Pitch /> : <Navigate to="/login" />} />
+
       </Routes>
     </>
   );
