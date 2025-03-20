@@ -3,14 +3,18 @@ import { TbLayoutDashboardFilled } from "react-icons/tb";
 import { MdWallet } from "react-icons/md";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { FaUser } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ setActiveTab, activeTab }) => {
+  const {authUser} = useSelector((store)=>store.userStore);// Assuming user data is in Redux
+  const firstTabLabel = authUser?.user?.role === "Entrepreneur" ? "Dashboard" : "Home";
+
   return (
     <>
       {/* Sidebar */}
-      <div className="w-1/5 bg-[#0A0A0A] border-r-1 border-r-[#3F3F3F] p-6 flex flex-col gap-6">
+      <div className="w-1/5 bg-[#0A0A0A] border-r-1 border-r-[#3F3F3F] p-5 flex flex-col gap-6">
         <img src="FullLogo.png" alt="" className="w-[120px] h-[30px] ml-6" />
-        <div className="flex justify-center mt-24">
+        <div className="flex justify-center mt-24 mr-4">
           <nav className="flex flex-col gap-10">
             <button
               onClick={() => setActiveTab("dashboard")}
@@ -19,7 +23,7 @@ const Sidebar = ({ setActiveTab, activeTab }) => {
               }`}
             >
               <TbLayoutDashboardFilled size={22} />
-              Dashboard
+              {firstTabLabel}
             </button>
 
             <button

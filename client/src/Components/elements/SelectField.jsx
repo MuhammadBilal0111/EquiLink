@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 import { category } from "@/constants";
 
-const SelectField = ({ label, placeholder, className, onChange }) => {
+const SelectField = ({ label, placeholder, className, onChange, includeAll = false }) => {
     const [selectedValue, setSelectedValue] = useState("");
 
     const handleChange = (value) => {
@@ -24,6 +24,8 @@ const SelectField = ({ label, placeholder, className, onChange }) => {
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
                 <SelectContent className="bg-[#262626] text-white border-none">
+                    {/* Conditionally include "All" option */}
+                    {includeAll && <SelectItem value="All">All</SelectItem>}
                     {category.length > 0 ? (
                         category.map((option) => (
                             <SelectItem key={option} value={option}>
@@ -39,7 +41,8 @@ const SelectField = ({ label, placeholder, className, onChange }) => {
             </Select>
         </div>
     );
-}
+};
+
 
 export default SelectField;
 
