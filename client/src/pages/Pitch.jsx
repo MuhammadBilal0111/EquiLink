@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { FaCheckCircle } from "react-icons/fa";
@@ -10,7 +10,9 @@ const Pitch = () => {
 
   const pitch = pitches.find((p) => p.id === parseInt(id));
   console.log(pitch);
-  
+
+  const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
+
 
   if (!pitch) {
     return <p className="text-white text-center mt-10">Pitch not found.</p>;
@@ -24,19 +26,24 @@ const Pitch = () => {
       <div className="p-9 mb-4">
         <h1 className="text-3xl">{pitch.title}</h1>
 
-        <div className="flex justify-between">
+        <div className="flex items-start justify-between my-3">
           {/* Category Tag */}
-          <span className="bg-[#CFB9FF] text-[#240C57] text-sm font-medium px-3 py-1 rounded-xl my-4 inline-block">
+          <span className="bg-[#CFB9FF] text-[#240C57] text-sm font-medium px-3 py-1 rounded-xl inline-block">
             {pitch.categoryName}
           </span>
 
           {/* Download Button */}
-          <button className="mt-6 bg-gradient-to-r from-[#D1B0D4] via-[#8B68AD] to-[#5A3592] cursor-pointer text-white text-sm px-6 py-2 rounded-md">
+          <a
+            href={pitch.projectFile}
+            download
+            className="bg-gradient-to-r from-[#D1B0D4] via-[#8B68AD] to-[#5A3592] cursor-pointer text-white text-sm px-6 py-2 rounded-md inline-block text-center"
+          >
             Download Project File
-          </button>
+          </a>
+
         </div>
 
-        <div className="mt-4 flex gap-6">
+        <div className="mt-8 flex gap-6">
           {/* Main Pitch Video */}
           <div className="w-4/7 ">
             <video
@@ -52,7 +59,7 @@ const Pitch = () => {
           {/* Right Section: Additional Images */}
           <div className="w-3/7 flex flex-col gap-4">
             <img
-              src={pitch.pitchImages[0] || "default-image.jpg"}
+              src={selectedImage || pitch.pitchImages[0]}
               alt="Pitch Preview"
               className="w-full h-65 object-cover rounded-lg"
             />
@@ -63,6 +70,7 @@ const Pitch = () => {
                   src={img || "default-image.jpg"}
                   alt={`Preview ${index}`}
                   className="w-24 h-20 object-cover rounded-lg cursor-pointer"
+                  onClick={() => setSelectedImage(img)}
                 />
               ))}
             </div>
@@ -76,9 +84,9 @@ const Pitch = () => {
         </div>
 
 
-        <div className="flex gap-6 items-center mt-5" >
+        <div className="flex gap-5 items-center mt-5" >
           {/* Fundraising Info */}
-          <div className="flex flex-col gap-2 bg-[#1E1E1E] p-4 rounded-lg border border-[#3F3F3F] w-[50%]">
+          <div className="flex flex-col gap-2 bg-[#1E1E1E] p-4 rounded-lg w-[50%]">
             <div className="flex justify-between items-center">
               <p className="text-sm text-[#D9D9D9]">Fundraising Goal:</p>
               <p className="text-lg">{pitch.fundingGoal} coins</p>

@@ -39,7 +39,7 @@ function App() {
       <Routes>
         <Route path="/" element={!authUser ? <LandingPage/> : <HomePage/>}/>
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to="/" />}/>
-        <Route path="/login" element={!authUser ? <LoginPage /> : <HomePage />}/>
+        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />}/>
         <Route path="/add-pitch" element={authUser ? <AddPitch /> : <Navigate to="/login" />}/>
         <Route path="/pitch/:id" element={authUser ? <Pitch /> : <Navigate to="/login" />} />
 
