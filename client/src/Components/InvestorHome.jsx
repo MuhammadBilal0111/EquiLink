@@ -9,7 +9,6 @@ const InvestorHome = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pitches } = useSelector((state) => state.pitchStore);
-  const { authUser } = useSelector((state) => state.userStore);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -39,6 +38,7 @@ const InvestorHome = () => {
       setFilteredPitches(pitches.filter((pitch) => pitch.categoryName === selectedCategory));
     }
   }, [selectedCategory, pitches]);
+  console.log(filteredPitches)
 
   return (
     <div className="w-4/5 py-5 px-8 flex flex-col gap-4">
@@ -63,13 +63,13 @@ const InvestorHome = () => {
             <div className="w-2/5 px-4 mr-2 flex flex-col">
               <div className="flex gap-x-4 items-center border-b border-b-white pb-3">
                 <img
-                  src="https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"
-                  alt="Tom"
+                  src=""
+                  alt="profilePic"
                   className="w-11 h-11 rounded-full object-cover"
                 />
                 <div className="flex flex-col leading-tight">
                   <p className="text-lg">{pitch.title}</p>
-                  <p className="text-sm mt-[-3px]">by Tom Cruise</p>
+                  <p className="text-sm mt-[-3px]">{pitch.title}</p>
                 </div>
               </div>
               <p className="text-sm py-10 mb-5">{pitch.description}</p>

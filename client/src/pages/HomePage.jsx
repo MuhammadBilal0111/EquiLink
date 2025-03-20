@@ -15,7 +15,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen w-full bg-[#0A0A0A] flex text-white">
       <Sidebar setActiveTab={setActiveTab} activeTab={activeTab} />
-      {activeTab === "dashboard" && (authUser?.user?.role === "Entrepreneur" ? <Dashboard /> : <InvestorHome />)}
+      {activeTab === "dashboard" && (authUser?.user?.role === "Entrepreneur" ? <Dashboard /> : <InvestorHome/>)}
       {activeTab === "profile" && <Profile />}
       {activeTab === "wallet" && <Wallet />}
       {activeTab === "messages" && <Messages />}
