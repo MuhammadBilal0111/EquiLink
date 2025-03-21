@@ -98,12 +98,12 @@ const Login = () => {
                             <div className="flex flex-col gap-1">
                                 <InputField label="Email" ref={emailRef} placeholder="Enter your email" />
                                 <InputField label="Password" ref={passwordRef} type="password" placeholder="Enter your password" />
+                                <p className='text-sm self-end text-white cursor-pointer' onClick={handleResetPassword}>Forgot Password?</p>
                             </div>
 
                             <div className="w-full flex flex-col justify-center items-center gap-3">
                                 <Button name="Login" handler={onSubmit} className="w-full max-w-80 max-h-[2rem]" />
                                 <p className='text-sm text-white'>Don’t have an account? <Link to={'/signUp'}>Signup</Link></p>
-                                <p className='text-sm text-white cursor-pointer mt-10' onClick={handleResetPassword}>Forgot Password</p>
                             </div>
                         </div>
                     </div>

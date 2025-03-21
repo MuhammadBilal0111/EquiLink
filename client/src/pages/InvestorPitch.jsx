@@ -24,17 +24,17 @@ const InvestorPitch = () => {
         <img className="relative w-[120px] h-[30px] left-5 top-3 " src="/FullLogo.png" alt="logo" />
       </Link>
       <div className="p-9 mb-4">
-      <div className="flex gap-x-4 items-center border-b border-b-white pb-3">
-                <img
-                  src=""
-                  alt="profilePic"
-                  className="w-11 h-11 rounded-full object-cover"
-                />
-                <div className="flex flex-col leading-tight">
-                  <p className="text-lg">{pitch.title}</p>
-                  <p className="text-sm mt-[-3px]">{pitch.title}</p>
-                </div>
-              </div>
+        <div className="flex gap-x-4 items-center pb-3">
+          <img
+            src=""
+            alt="profilePic"
+            className="w-11 h-11 rounded-full object-cover"
+          />
+          <div className="flex flex-col leading-tight">
+            <p className="text-lg">{pitch.title}</p>
+            <p className="text-sm mt-[-3px]">{pitch.title}</p>
+          </div>
+        </div>
 
         <div className="flex items-start justify-between my-3">
           {/* Category Tag */}
@@ -107,24 +107,7 @@ const InvestorPitch = () => {
             </div>
           </div>
 
-          <div className="flex gap-40 bg-[#140F1B] border p-4 border-white rounded-lg w-[50%]">
-            <div className="flex text-sm text-[#D9D9D9] flex-col gap-2">
-              Investment status:
-              <span className="text-base text-white flex items-center gap-2"><FaCheckCircle size={22} />{!pitch.investorId ?"Not funded":"Done"}</span>
-            </div>
-            <div className="flex flex-col gap-2 text-sm text-[#D9D9D9]">
-              Invested by:
-              <div className="flex gap-2">
-                <img
-                  src={pitch.investorImage || "https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"}
-                  alt={pitch.investorName}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <p className="text-base text-white">Abdul Ahad</p>
-              </div>
-
-            </div>
-          </div>
+          
         </div>
 
 
