@@ -47,12 +47,15 @@ const Signup = () => {
         try {
             const res = await axiosInstance.post("/auth/signup", data)
             if (res.data.status === true) {
-              dispatch(userActions.setUser(res.data.data));
-              toast.success("Signed up successfully!")
-              navigate('/home')
-            } else {
-            toast.error("Something went wrong");
-            }
+                const user = res.data.data
+                dispatch(userActions.setUser(user)); // Dispatching user data to Redux store
+                toast.success("Logged in successfully!")
+                localStorage.setItem("user",user)
+                navigate('/')
+                }
+                else {
+                toast.error("Something went wrong");
+                }
           } catch (err) {
             toast.error(err.message);
           }

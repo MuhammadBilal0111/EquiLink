@@ -63,13 +63,13 @@ const InvestorHome = () => {
             <div className="w-2/5 px-4 mr-2 flex flex-col">
               <div className="flex gap-x-4 items-center border-b border-b-white pb-3">
                 <img
-                  src=""
+                  src={pitch.entrepreneur?.profile?.profileImage}
                   alt="profilePic"
                   className="w-11 h-11 rounded-full object-cover"
                 />
                 <div className="flex flex-col leading-tight">
                   <p className="text-lg">{pitch.title}</p>
-                  <p className="text-sm mt-[-3px]">{pitch.title}</p>
+                  <p className="text-sm mt-[-3px]">{pitch.entrepreneur?.name}</p>
                 </div>
               </div>
               <p className="text-sm py-10 mb-5">{pitch.description}</p>
@@ -82,6 +82,7 @@ const InvestorHome = () => {
                   <span className="text-[#C5C5C5] text-sm">Equity:</span>
                   <span className="text-white">{pitch?.equity} %</span>
                 </p>
+                {console.log(pitch.entrepreneur?.profile?.profileImage)}
               </div>
               <Button
                 name="Invest on project"

@@ -26,13 +26,13 @@ const InvestorPitch = () => {
       <div className="p-9 mb-4">
       <div className="flex gap-x-4 items-center border-b border-b-white pb-3">
                 <img
-                  src=""
+                  src={pitch.entrepreneur?.profile?.profileImage}
                   alt="profilePic"
                   className="w-11 h-11 rounded-full object-cover"
                 />
                 <div className="flex flex-col leading-tight">
                   <p className="text-lg">{pitch.title}</p>
-                  <p className="text-sm mt-[-3px]">{pitch.title}</p>
+                  <p className="text-sm mt-[-3px]">{pitch.entrepreneur?.name}</p>
                 </div>
               </div>
 

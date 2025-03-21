@@ -26,7 +26,7 @@ const Hero = ()=>{
           </div>
 
           <div className="mb-10">
-            <Link to="/home">
+            <Link to="/signup">
                 <Button name={"Get Started"} className={"font-bold"}></Button>
             </Link>
           </div>
