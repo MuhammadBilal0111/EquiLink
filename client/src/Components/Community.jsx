@@ -5,10 +5,11 @@ import { fetchPitches, setPitches } from "@/store"; // Adjust path as needed
 import SelectField from "./elements/SelectField";
 import Button from "./elements/Button";
 
-const InvestorHome = () => {
+const Community = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pitches } = useSelector((state) => state.pitchStore);
+  const {authUser} = useSelector((state)=> state.userStore)
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,12 +34,18 @@ const InvestorHome = () => {
 
   useEffect(() => {
     if (selectedCategory === "All") {
-      setFilteredPitches(pitches);
+      setFilteredPitches(pitches.filter((pitch) => {
+        return((pitch.entrepreneurId !== authUser?.user?.id))
+        }))
     } else {
-      setFilteredPitches(pitches.filter((pitch) => pitch.categoryName === selectedCategory));
+      setFilteredPitches(pitches.filter((pitch) => {
+        return((pitch.categoryName === selectedCategory) && (pitch.entrepreneurId !== authUser?.user?.id))
+        }
+    ));
     }
   }, [selectedCategory, pitches]);
-  console.log(filteredPitches)
+  console.log(authUser.user.id, "community")
+
 
   return (
     <div className="w-4/5 py-5 px-8 flex flex-col gap-4 ml-[18%]">
@@ -80,11 +87,6 @@ const InvestorHome = () => {
                 </p>
                 {console.log(pitch.entrepreneur?.profile?.profileImage)}
               </div>
-              <Button
-                name="Invest on project"
-                className="w-full rounded-md max-h-[2rem]"
-                handler={() => navigate(`/pitch/${pitch.id}`)}
-              />
             </div>
             <div className="w-3/5">
               <img
@@ -100,4 +102,4 @@ const InvestorHome = () => {
   );
 };
 
-export default InvestorHome;
+export default Community;

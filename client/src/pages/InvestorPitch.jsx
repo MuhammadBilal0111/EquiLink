@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FaCheckCircle } from "react-icons/fa";
+import Button from "@/components/elements/Button";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
 const InvestorPitch = () => {
@@ -24,17 +25,17 @@ const InvestorPitch = () => {
         <img className="relative w-[120px] h-[30px] left-5 top-3 " src="/FullLogo.png" alt="logo" />
       </Link>
       <div className="p-9 mb-4">
-      <div className="flex gap-x-4 items-center border-b border-b-white pb-3">
-                <img
-                  src={pitch.entrepreneur?.profile?.profileImage}
-                  alt="profilePic"
-                  className="w-11 h-11 rounded-full object-cover"
-                />
-                <div className="flex flex-col leading-tight">
-                  <p className="text-lg">{pitch.title}</p>
-                  <p className="text-sm mt-[-3px]">{pitch.entrepreneur?.name}</p>
-                </div>
-              </div>
+        <div className="flex gap-x-4 items-center pb-3">
+          <img
+            src={pitch.entrepreneur?.profile?.profileImage}
+            alt="profilePic"
+            className="w-11 h-11 rounded-full object-cover"
+          />
+          <div className="flex flex-col leading-tight">
+            <p className="text-lg">{pitch.title}</p>
+            <p className="text-sm mt-[-3px]">{pitch.entrepreneur?.name}</p>
+          </div>
+        </div>
 
         <div className="flex items-start justify-between my-3">
           {/* Category Tag */}
@@ -107,26 +108,15 @@ const InvestorPitch = () => {
             </div>
           </div>
 
-          <div className="flex gap-40 bg-[#140F1B] border p-4 border-white rounded-lg w-[50%]">
-            <div className="flex text-sm text-[#D9D9D9] flex-col gap-2">
-              Investment status:
-              <span className="text-base text-white flex items-center gap-2"><FaCheckCircle size={22} />{!pitch.investorId ?"Not funded":"Done"}</span>
-            </div>
-            <div className="flex flex-col gap-2 text-sm text-[#D9D9D9]">
-              Invested by:
-              <div className="flex gap-2">
-                <img
-                  src={pitch.investorImage || "https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"}
-                  alt={pitch.investorName}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <p className="text-base text-white">Abdul Ahad</p>
-              </div>
 
+          <div className="flex flex-col gap-2 bg-[#1E1E1E] p-8 rounded-lg w-[50%]">
+            <div className="flex justify-around items-center">
+              <Button name={"Message the owner"} className={"w-[15rem]"}></Button>
+              <Button name={"Invest"} className={"w-[15rem]"}></Button>
             </div>
           </div>
-        </div>
 
+        </div>
 
       </div>
     </div>

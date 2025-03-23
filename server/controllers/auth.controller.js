@@ -304,7 +304,16 @@ class AuthController extends BaseController {
 
   checkAuth = async (req,res)=>{
     return this.successResponse(res, {user:req.user}, "Password reset successfully");
-  }
+  };
+
+  logout = async(req,res)=>{
+    res.cookie("token","",{
+        maxAge:0
+    })
+
+    return this.successResponse(res, {}, "Logged out successfully");
+}
+
 }
 
 module.exports = new AuthController();

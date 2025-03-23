@@ -100,20 +100,31 @@ const Pitch = () => {
           <div className="flex gap-40 bg-[#140F1B] border p-4 border-white rounded-lg w-[50%]">
             <div className="flex text-sm text-[#D9D9D9] flex-col gap-2">
               Investment status:
-              <span className="text-base text-white flex items-center gap-2"><FaCheckCircle size={22} /> Done</span>
+              <span className="text-base text-white flex items-center gap-2">
+                {pitch.investorId ? (
+                  <>
+                    <FaCheckCircle size={22} /> Done
+                  </>
+                ) : (
+                  "Not funded"
+                )}
+              </span>
             </div>
-            <div className="flex flex-col gap-2 text-sm text-[#D9D9D9]">
-              Invested by:
-              <div className="flex gap-2">
-                <img
-                  src={pitch.investorImage || "https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"}
-                  alt={pitch.investorName}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <p className="text-base text-white">Tom Cruise</p>
-              </div>
+            {pitch.investorId ?
+              <div className="flex flex-col gap-2 text-sm text-[#D9D9D9]">
+                Invested by:
+                <div className="flex gap-2">
+                  <img
+                    src={pitch.investorImage || "https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"}
+                    alt={pitch.investorName}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <p className="text-base text-white">Abdul Ahad</p>
+                </div>
 
-            </div>
+              </div>
+              : null
+            }
           </div>
         </div>
 

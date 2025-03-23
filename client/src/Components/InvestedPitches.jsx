@@ -3,9 +3,9 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPitches, setPitches } from "@/store"; // Adjust path based on project structure
-import { GoGlobe } from "react-icons/go";
 
-const Dashboard = () => {
+
+const InvestedPitches = () => {
   const dispatch = useDispatch();
   const { pitches } = useSelector((state) => state.pitchStore);
   const { authUser } = useSelector((state) => state.userStore);
@@ -38,27 +38,13 @@ const Dashboard = () => {
 
   return (
     <div className="w-4/5 p-8 ml-[18%]">
-      <div className="flex justify-end items-center gap-x-4">
-        <button className="bg-[#262626] text-md px-4 py-1 cursor-pointer rounded-xl flex items-center gap-2">
-        <GoGlobe size={24}/> Community
-        </button>
-      
-        <button className="bg-[#262626] border text-md border-[#222124] text-white px-8 py-1 cursor-pointer rounded-xl">
-          Logout
-        </button>
-      </div>
       <h2 className="text-2xl">Welcome, {authUser?.user?.name}!</h2>
       <p className="mt-2 text-sm text-[#C5C5C5]">
-        Let's check out the responses of investors. How they respond to your pitch.
+        Here are the investments you have made till now.
       </p>
 
       <div className="mt-6 flex justify-between border-t border-t-[#3F3F3F] py-4">
-        <h3 className="text-lg">Your Pitches</h3>
-        <Link to="/add-pitch">
-          <button className="mt-2 cursor-pointer text-sm bg-gradient-to-r from-[#D1B0D4] via-[#8B68AD] to-[#5A3592] px-10 py-1.5 rounded-sm">
-            + Add New Pitch
-          </button>
-        </Link>
+        <h3 className="text-lg">Your Invested pitches</h3>
       </div>
 
       {/* Loading, Error & Pitch Display */}
@@ -116,4 +102,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default InvestedPitches;

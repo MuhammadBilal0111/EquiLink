@@ -6,6 +6,9 @@ import Profile from "@/Components/Profile";
 import Sidebar from "@/Components/Sidebar";
 import Wallet from "@/Components/Wallet";
 import Messages from "@/Components/Messages";
+import InvestedPitches from "@/Components/InvestedPitches";
+import Community from "@/components/community";
+
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -19,6 +22,8 @@ const HomePage = () => {
       {activeTab === "profile" && <Profile />}
       {activeTab === "wallet" && <Wallet />}
       {activeTab === "messages" && <Messages />}
+      {activeTab === "invested-pitches" && <InvestedPitches />}
+      {activeTab === "community" && <Community />}
     </div>
   );
 };
