@@ -41,38 +41,34 @@ const InvestorHome = () => {
   console.log(filteredPitches)
 
   return (
-    <div className="w-4/5 py-5 px-8 flex flex-col gap-4">
-      <div className="flex justify-end items-center">
-        <button className="bg-[#262626] border text-md border-[#222124] text-white px-8 py-1 cursor-pointer rounded-xl">
-          Logout
-        </button>
-      </div>
+    <div className="w-4/5 py-5 px-8 flex flex-col gap-4 ml-[18%]">
       <img src="Banner.png" alt="Banner" />
       <div className="flex items-center gap-3 justify-end text-sm">
         Filter by category:
         <SelectField 
           className="w-40 cursor-pointer" 
-          placeholder="All" 
           includeAll={true}
           onChange={setSelectedCategory} 
         />
       </div>
       <div className="flex flex-col gap-6">
         {filteredPitches.map((pitch) => (
-          <div key={pitch.id} className="flex text-white h-[300px] my-6">
-            <div className="w-2/5 px-4 mr-2 flex flex-col">
+          <div key={pitch.id} className="flex text-white h-[350px] my-6">
+            <div className="w-2/5 px-4 mr-2 flex flex-col h-[350px]">
               <div className="flex gap-x-4 items-center border-b border-b-white pb-3">
                 <img
-                  src=""
+                  src={pitch.entrepreneur?.profile?.profileImage}
                   alt="profilePic"
                   className="w-11 h-11 rounded-full object-cover"
                 />
                 <div className="flex flex-col leading-tight">
                   <p className="text-lg">{pitch.title}</p>
-                  <p className="text-sm mt-[-3px]">{pitch.title}</p>
+                  <p className="text-sm mt-[-3px]">{pitch.entrepreneur?.name}</p>
                 </div>
               </div>
-              <p className="text-sm py-10 mb-5">{pitch.description}</p>
+              <div className="flex-grow">
+              <p className="text-sm py-10">{pitch.description} </p>
+              </div>
               <div className="my-6 text-sm flex flex-col gap-1">
                 <p className="flex justify-between">
                   <span className="text-[#C5C5C5] text-sm">Fundraising Goal:</span>
@@ -82,6 +78,7 @@ const InvestorHome = () => {
                   <span className="text-[#C5C5C5] text-sm">Equity:</span>
                   <span className="text-white">{pitch?.equity} %</span>
                 </p>
+                {console.log(pitch.entrepreneur?.profile?.profileImage)}
               </div>
               <Button
                 name="Invest on project"

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { FaCheckCircle } from "react-icons/fa";
+import Button from "@/components/elements/Button";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { Link } from "react-router-dom";
 
 const InvestorPitch = () => {
@@ -26,13 +27,13 @@ const InvestorPitch = () => {
       <div className="p-9 mb-4">
         <div className="flex gap-x-4 items-center pb-3">
           <img
-            src=""
+            src={pitch.entrepreneur?.profile?.profileImage}
             alt="profilePic"
             className="w-11 h-11 rounded-full object-cover"
           />
           <div className="flex flex-col leading-tight">
             <p className="text-lg">{pitch.title}</p>
-            <p className="text-sm mt-[-3px]">{pitch.title}</p>
+            <p className="text-sm mt-[-3px]">{pitch.entrepreneur?.name}</p>
           </div>
         </div>
 
@@ -107,9 +108,15 @@ const InvestorPitch = () => {
             </div>
           </div>
 
-          
-        </div>
 
+          <div className="flex flex-col gap-2 bg-[#1E1E1E] p-8 rounded-lg w-[50%]">
+            <div className="flex justify-around items-center">
+              <Button name={"Message the owner"} className={"w-[15rem]"}></Button>
+              <Button name={"Invest"} className={"w-[15rem]"}></Button>
+            </div>
+          </div>
+
+        </div>
 
       </div>
     </div>

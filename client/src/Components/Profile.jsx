@@ -16,7 +16,6 @@ const Profile = () => {
 
   const getProfile = async () => {
     try {
-      console.log(authUser.user.id, "from profile");
       const res = await axiosInstance.get(
         `/users/get-userProfile/${authUser.user.id}`,
         {
@@ -25,7 +24,6 @@ const Profile = () => {
           },
         }
       );
-      console.log(res.data.data[0], "from profile hwllo");
       let profile = res.data.data[0];
       dispatch(profileActions.setProfile(profile));
       setProfileImage(res.data.data[0].profileImage);
@@ -187,12 +185,7 @@ const Profile = () => {
   return (
     <>
       {/* Main Content */}
-      <div className="w-4/5 p-8">
-        <div className="flex justify-end items-center">
-          <button className="bg-[#262626] border text-md border-[#222124] text-white px-8 py-1 rounded-xl">
-            Logout
-          </button>
-        </div>
+      <div className="w-4/5 p-8 ml-[18%]">
         <h2 className="text-2xl">Welcome, {authUser.user?.name || "Jhon"}!</h2>
         {/* Profile Section */}
         <div className="flex flex-col justify-center items-center mt-8 gap-7 border-t border-t-[#3F3F3F] py-4">

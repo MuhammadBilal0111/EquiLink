@@ -3,8 +3,8 @@ import Button from "./Button";
 
 const Hero = ()=>{
     return (
-        <div className="flex flex-col text-white justify-center items-center gap-9 z-10 w-[800px] mt-20 font-poppins mb-10">
-          <div className="flex gap-10 text-sm text-[#9C9C9C] border-b-[#9c9c9c]">
+        <div className="flex flex-col text-white justify-center items-center gap-9 z-10 w-[800px] mt-12 font-poppins mb-10">
+          <div className="flex gap-10 text-sm">
             <span className="p-2 px-10 border rounded-[20px]">
               Blockchain Based
             </span>
@@ -18,21 +18,21 @@ const Hero = ()=>{
           </div>
 
           <div>
-            <p className="text-[#CCCCCC] text-center text-sm">
-              Lorem ipsum is a dummy or placeholder text commonly used in
-              graphic design, publishing, and web development to fill empty
-              spaces in a layout that does not yet have content.
+            <p className="text-[#dedddd] text-center text-sm">
+            We provides a secure and decentralized ecosystem where entrepreneurs can pitch their ideas and raise funds directly from investors using blockchain technology.
             </p>
           </div>
 
           <div className="mb-10">
-            <Link to="/home">
-                <Button name={"Get Started"} className={"font-bold"}></Button>
+            <Link to="/login">
+                <Button name={"Get Started"} className={"font-medium py-1"}></Button>
             </Link>
           </div>
           <div>
             {/* <img src="" alt="" /> */}
-            <div className="bg-gray-300 h-[30rem] w-[60rem] rounded-2xl" ></div>
+            <div className="flex h-[34rem] w-[55rem] justify-center" >
+              <img src="DashboardSS.png" alt=""  className=" h-full object-cover"/>
+            </div>
           </div>
         </div>
     )

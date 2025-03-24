@@ -3,6 +3,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPitches, setPitches } from "@/store"; // Adjust path based on project structure
+import { GoGlobe } from "react-icons/go";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -36,12 +37,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="w-4/5 p-8">
-      <div className="flex justify-end items-center">
-        <button className="bg-[#262626] border text-md border-[#222124] text-white px-8 py-1 rounded-xl">
-          Logout
-        </button>
-      </div>
+    <div className="w-4/5 p-8 ml-[18%]">
       <h2 className="text-2xl">Welcome, {authUser?.user?.name}!</h2>
       <p className="mt-2 text-sm text-[#C5C5C5]">
         Let's check out the responses of investors. How they respond to your pitch.

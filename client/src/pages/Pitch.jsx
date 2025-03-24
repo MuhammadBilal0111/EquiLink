@@ -101,7 +101,7 @@ const Pitch = () => {
             <div className="flex text-sm text-[#D9D9D9] flex-col gap-2">
               Investment status:
               <span className="text-base text-white flex items-center gap-2">
-                {!pitch.investorId ? (
+                {pitch.investorId ? (
                   <>
                     <FaCheckCircle size={22} /> Done
                   </>
@@ -110,7 +110,7 @@ const Pitch = () => {
                 )}
               </span>
             </div>
-            {!pitch.investorId ?
+            {pitch.investorId ?
               <div className="flex flex-col gap-2 text-sm text-[#D9D9D9]">
                 Invested by:
                 <div className="flex gap-2">

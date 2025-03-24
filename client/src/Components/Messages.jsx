@@ -2,7 +2,7 @@ import React from 'react'
 
 const Messages = () => {
   return (
-    <div>Messages</div>
+    <div className='ml-[18%]'>Messages</div>
   )
 }
 
