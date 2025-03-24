@@ -1,7 +1,13 @@
 import { toast } from "sonner";
+import { structuredProjects, generateSlug } from "@/lib/utils";
+import { ethers, parseEther } from "ethers";
+import address from "../../contract/artifacts/contractAddress.json";
+import abi from "../../contract/artifacts/contracts/Genesis.sol/Genesis.json";
 import { useDispatch } from "react-redux";
 import { profileActions } from "@/store";
 
+const contractAddress = address.address;
+const contractAbi = abi.abi;
 const { ethereum } = window;
 
 export const connectWallet = async () => {
@@ -67,27 +73,32 @@ export const isWalletConnected = async () => {
     console.error("MetaMask Connection Error:", error);
   }
 };
+
 // getting ethereum contract
-export const getEthereumContract = async (connectedAccount) => {
+export const getEthereumContract = async (walletAddress) => {
+  let connectedAccount;
   try {
+    if (!walletAddress) {
+      connectedAccount = await connectWallet();
+    }
     if (!connectedAccount) {
       toast.error("Error connecting to MetaMask");
       throw new Error("MetaMask Connection Error: No connected account found");
     }
-
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     return new ethers.Contract(contractAddress, contractAbi, signer);
   } catch (error) {
     console.error("Failed to get Ethereum contract:", error);
-    throw error;
+    toast.error("Failed to get Ethereum contract:");
   }
 };
-
+// function to create the project
 export const createProject = async ({
   connectedAccount,
   title,
   description,
+  category,
   ownerName,
   equity,
   cost,
@@ -95,63 +106,89 @@ export const createProject = async ({
   try {
     if (!ethereum) return toast.error("Please install Metamask");
     const contract = await getEthereumContract(connectedAccount);
+    if (!contract) {
+      ToastFailure("Failed to connect to the contract.");
+      return;
+    }
+    equity = ethers.parseUnits(equity.toString(), 18); // Scale to 18 decimals
     cost = parseEther(cost);
+    const slug = generateSlug(title);
     const tx = await contract.createProject(
       title,
       description,
-      slug,
+      category,
       ownerName,
+      slug,
       equity,
       cost
     );
     await tx.wait();
-    await loadProjects();
-    return true;
+    const projects = await loadProjects(); // for testing
+    return projects[projects.length - 1];
   } catch (error) {
     console.log(error);
-    toast.error(error.message);
+    toast.error("Error in loading the data in contract");
   }
 };
-const loadProjects = async (connectedAccount) => {
+export const loadProjects = async (connectedAccount) => {
   try {
     if (!ethereum) return toast.error("Please install Metamask");
-
     const contract = await getEthereumContract(connectedAccount);
+    if (!contract) {
+      ToastFailure("Failed to connect to the contract.");
+      return;
+    }
     const projects = await contract.getProjects();
+    console.log("contract data", structuredProjects(projects));
     return structuredProjects(projects);
   } catch (error) {
     console.log(error);
-    toast.error(error.message);
+    toast.error("Error in loading the data in contract");
   }
 };
 export const loadProject = async ({ connectedAccount, id }) => {
   try {
     if (!ethereum) return toast.error("Please install Metamask");
     const contract = await getEthereumContract(connectedAccount);
-
+    if (!contract) {
+      ToastFailure("Failed to connect to the contract.");
+      return;
+    }
     const project = await contract.getProject(id);
     return structuredProjects([project])[0];
   } catch (error) {
     console.log(error);
-    toast.error(error.message);
+    toast.error("Error in loading the data in contract");
   }
 };
 
-export const backProject = async (connectedAccount, id, amount) => {
+export const backProject = async (
+  connectedAccount,
+  id,
+  amount,
+  investorName,
+  equity
+) => {
   // Check if MetaMask is available
   if (!ethereum) return toast.error("Please install Metamask");
 
   const contract = await getEthereumContract(connectedAccount); // Assuming getEtheriumContract() returns a contract instance
-  const amount = ethers.parseEther(amount.toString());
+  if (!contract) {
+    ToastFailure("Failed to connect to the contract.");
+    return;
+  }
+  amount = ethers.parseEther(amount.toString());
   console.log("Amount in wei:", amount.toString()); // Debug the final amount in wei
 
   try {
-    const tx = await contract.backProject(id, investorName, {
+    equity = ethers.parseUnits(equity.toString(), 18);
+    const tx = await contract.backProject(id, investorName, equity, {
       from: connectedAccount,
       value: amount,
     });
 
     console.log("Transaction Hash:", tx.hash); // Log transaction hash for debugging
+    console.log("restructure", getProjectBacker(connectedAccount, id));
     await tx.wait(); // Wait for the transaction to be mined
     return true;
   } catch (error) {
@@ -160,18 +197,22 @@ export const backProject = async (connectedAccount, id, amount) => {
   }
 };
 
-const structuredProjects = (projects) =>
-  projects.map((project) => ({
-    id: Number(project[0]),
-    owner: project[1]?.toLowerCase(),
-    title: project[2],
-    description: project[3],
-    slug: project[4],
-    cost: Number(project[5]) / 10 ** 18,
-    raised: Number(project[6]) / 10 ** 18,
-    timestamp: new Date(Number(project[7]) * 1000).getTime(),
-    investorAddress: project[8]?.toLowerCase(),
-    ownerName: project[9],
-    investorName: project[10],
-    equity: Number(project[11]),
-  }));
+// function to get all backers
+export const getProjectBacker = async (connectedAccount, id) => {
+  try {
+    if (!ethereum) {
+      toast.error("Please install Metamask");
+      return;
+    }
+    const contract = await getEthereumContract(connectedAccount);
+    if (!contract) {
+      toast.error("Failed to connect to the contract.");
+      return;
+    }
+    const backer = await contract?.getBacker(id);
+    return structuredProjects([backer])[0];
+  } catch (error) {
+    console.log(error);
+    toast.error("Error in Backing the project");
+  }
+};

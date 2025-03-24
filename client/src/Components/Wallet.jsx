@@ -3,7 +3,7 @@ import Button from "./elements/Button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { profileActions } from "@/store";
-import { connectWallet } from "@/services/metamask";
+import { connectWallet } from "@/services/blockchain";
 
 function Wallet() {
   const dispatch = useDispatch();

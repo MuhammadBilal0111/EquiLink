@@ -22,6 +22,7 @@ contract Genesis {
         address owner;
         string title;
         string description;
+        string category;
         string slug;
         uint cost;
         uint raised;
@@ -49,13 +50,15 @@ contract Genesis {
     function createProject(
         string memory title,
         string memory description,
-        string memory slug,
+        string memory category,
         string memory ownerName,
+        string memory slug,
         uint equity,
         uint cost
     ) public returns (bool) {
         require(bytes(title).length > 0, "Title cannot be empty");
         require(bytes(description).length > 0, "Description cannot be empty");
+        require(bytes(category).length > 0, "Category cannot be empty");
         require(bytes(ownerName).length > 0, "Owner Name cannot be empty");
         require(bytes(slug).length > 0, "Slug cannot be empty");
         require(cost > 0 ether, "Cost cannot be zero");
@@ -65,9 +68,10 @@ contract Genesis {
         project.owner = msg.sender;
         project.title = title;
         project.description = description;
+        project.category = category;
         project.slug = slug;
-        project.equity = equity;
         project.cost = cost;
+        project.equity = equity;
         project.timestamp = block.timestamp;
 
         project.ownerName = ownerName;
@@ -88,7 +92,8 @@ contract Genesis {
     // function to refund project
     function backProject(
         uint id,
-        string memory investorName
+        string memory investorName,
+        uint equity
     ) public payable returns (bool) {
         require(msg.value > 0 ether, "Ether must be greater than zero");
         require(projectExist[id], "Project not found");
@@ -96,8 +101,22 @@ contract Genesis {
             msg.value >= projects[id].cost,
             "Ether must be greater than cost"
         );
+        address projectOwner = projects[id].owner;
+        for (uint i = 0; i < projectsOf[projectOwner].length; i++) {
+            if (projectsOf[projectOwner][i].id == id) {
+                projectsOf[projectOwner][i].raised = msg.value;
+                projectsOf[projectOwner][i].investorAddress = msg.sender;
+                projectsOf[projectOwner][i].investorName = investorName;
+                projectsOf[projectOwner][i].equity = equity;
+                break;
+            }
+        }
+        // Ensure other mappings are updated properly
         projects[id].investorAddress = msg.sender;
         projects[id].investorName = investorName;
+        projects[id].raised = msg.value;
+        projects[id].equity = equity;
+        projectsOfByName[projects[id].slug] = projects[id];
         stats.totalInvestors += 1;
         stats.totalInvestment += msg.value;
         performPayout(id);
@@ -107,13 +126,12 @@ contract Genesis {
     function performPayout(uint id) internal {
         uint raised = projects[id].raised;
         payTo(projects[id].owner, raised);
-
         emit Action(id, "PROJECT PAID OUT", msg.sender, block.timestamp);
     }
 
     function payTo(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
-        require(success);
+        require(success, "Payment failed");
     }
     function getProjects() public view returns (projectStruct[] memory) {
         return projects;
@@ -130,5 +148,8 @@ contract Genesis {
         string memory _slug
     ) public view returns (projectStruct memory) {
         return projectsOfByName[_slug];
+    }
+    function getBacker(uint id) public view returns (projectStruct memory) {
+        return projects[id];
     }
 }
