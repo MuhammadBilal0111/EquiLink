@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 const CTO = () => {
   return (
-    <div className="relative bg-[url('/BlueGradient.jpg')] bg-cover bg-center h-[25rem] w-full flex flex-col items-center justify-center gap-8 mt-60">
+    <div className="relative bg-[url('/BlueGradient.jpg')] bg-cover bg-center h-[25rem] w-full flex flex-col items-center justify-center gap-8 mt-52">
       <div className="relative text-white text-5xl z-10 font-poppins">
         Join our Blockchain Community!
       </div>

@@ -4,6 +4,9 @@ import Hero from "./elements/Hero";
 import Blocks from "./elements/Blocks"
 import CTO from "./elements/CTO"
 import Footer from "./elements/Footer";
+import Blockchain from "./elements/Blockchain";
+import Transaction from "./elements/TransactionBlock";
+import TransactionBlock from "./elements/TransactionBlock";
 
 const Landing = () => {
   return (
@@ -36,6 +39,8 @@ const Landing = () => {
       <div className="flex flex-col justify-center items-center bg-black font-poppins">
         <Hero/>
         <Blocks/>
+        <Blockchain/>
+        <TransactionBlock/>
         <CTO/>
         <Footer/>
       </div>
