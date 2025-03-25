@@ -16,7 +16,6 @@ const Profile = () => {
 
   const getProfile = async () => {
     try {
-      console.log(authUser.user.id, "from profile");
       const res = await axiosInstance.get(
         `/users/get-userProfile/${authUser.user.id}`,
         {
@@ -25,7 +24,6 @@ const Profile = () => {
           },
         }
       );
-      console.log(res.data.data[0], "from profile hwllo");
       let profile = res.data.data[0];
       dispatch(profileActions.setProfile(profile));
       setProfileImage(res.data.data[0].profileImage);

@@ -38,15 +38,6 @@ const Dashboard = () => {
 
   return (
     <div className="w-4/5 p-8 ml-[18%]">
-      <div className="flex justify-end items-center gap-x-4">
-        <button className="bg-[#262626] text-md px-4 py-1 cursor-pointer rounded-xl flex items-center gap-2">
-        <GoGlobe size={24}/> Community
-        </button>
-      
-        <button className="bg-[#262626] border text-md border-[#222124] text-white px-8 py-1 cursor-pointer rounded-xl">
-          Logout
-        </button>
-      </div>
       <h2 className="text-2xl">Welcome, {authUser?.user?.name}!</h2>
       <p className="mt-2 text-sm text-[#C5C5C5]">
         Let's check out the responses of investors. How they respond to your pitch.

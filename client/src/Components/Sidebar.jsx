@@ -6,12 +6,34 @@ import { FaUser } from "react-icons/fa";
 import { GoGlobe } from "react-icons/go";
 import { MdLogout } from "react-icons/md";
 import { FaBitcoin } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "@/store";
+import { axiosInstance } from "@/lib/axios";
+import { toast } from "sonner";
 
 const Sidebar = ({ setActiveTab, activeTab }) => {
   const { authUser } = useSelector((store) => store.userStore);
+  const dispatch = useDispatch()
   const userRole = authUser?.user?.role;
   const firstTabLabel = userRole === "Entrepreneur" ? "Dashboard" : "Home";
+
+
+  const logout = async ()=>{
+    setActiveTab("logout")
+    try{
+      const res = await axiosInstance.post("/auth/logout")
+      if(res.data.status == true){
+        dispatch(userActions.setUser(null));
+        toast.success(res.data.message)
+      }
+      else{
+        toast.error("Something went wrong")
+      }
+    }
+    catch(err){
+      toast.error("Something went wrong")
+    }
+  }
 
   return (
     <>
@@ -92,8 +114,8 @@ const Sidebar = ({ setActiveTab, activeTab }) => {
 
         {/* Logout Button at Bottom */}
         <button
-          onClick={() => setActiveTab("logout")}
-          className="flex cursor-pointer items-center gap-6 text-[15px] mt-26 ml-3 hover:text-gray-300"
+          onClick={()=>logout()}
+          className="flex cursor-pointer items-center gap-6 text-[15px] mt-26 ml-[30px] hover:text-gray-300"
         >
           <MdLogout size={19} />
           Logout

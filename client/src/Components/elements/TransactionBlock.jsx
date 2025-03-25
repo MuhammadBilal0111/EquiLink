@@ -4,7 +4,7 @@ const TransactionBlock = () => {
   return (
     <div className='text-white mt-30 max-w-[70%] flex flex-col items-center'>
     <h2 className="text-5xl self-start font-poppins text-center mb-6">
-        QUICK N SECURE</h2>
+        QUICK AND SECURE</h2>
     <h2 className="text-5xl self-center text-center mb-6">
         <span className="px-4 border border-white rounded-full">TRANSACTIONS</span>
     </h2>

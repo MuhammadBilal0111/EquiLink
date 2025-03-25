@@ -7,10 +7,15 @@ import Sidebar from "@/Components/Sidebar";
 import Wallet from "@/Components/Wallet";
 import Messages from "@/Components/Messages";
 import InvestedPitches from "@/Components/InvestedPitches";
-
+import Community from "@/components/community";
+import { useLocation } from "react-router-dom";
 
 const HomePage = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const defaultTab = queryParams.get("tab") || "dashboard"; // Get tab from URL or fallback to "dashboard"
+
+  const [activeTab, setActiveTab] = useState(defaultTab);
 
   const {authUser} = useSelector((store)=>store.userStore);// Assuming user data is in Redux
 
@@ -22,6 +27,7 @@ const HomePage = () => {
       {activeTab === "wallet" && <Wallet />}
       {activeTab === "messages" && <Messages />}
       {activeTab === "invested-pitches" && <InvestedPitches />}
+      {activeTab === "community" && <Community />}
     </div>
   );
 };
