@@ -12,6 +12,8 @@ import AddPitch from "./Components/AddPitch";
 import Pitch from "./pages/Pitch";
 import InvestorPitch from "./pages/InvestorPitch"
 
+
+
 function App() {
 
   
@@ -32,6 +34,7 @@ function App() {
 
   useEffect(()=>{
     checkAuth()
+
   },[])
 
   return (

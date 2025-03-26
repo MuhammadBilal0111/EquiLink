@@ -2,17 +2,67 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Button from "@/components/elements/Button";
-import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Service from "@/constants/Service";
 
 const InvestorPitch = () => {
   const { id } = useParams();
   const { pitches } = useSelector((state) => state.pitchStore);
+  const {authUser} = useSelector((state)=> state.userStore)
 
   const pitch = pitches.find((p) => p.id === parseInt(id));
   console.log(pitch);
 
   const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
+
+  const navigate = useNavigate();
+
+  const handleMessageOwner = async() => {
+    const entrepreneurId = pitch.entrepreneur?.id;
+    const investorId = authUser?.user?.id; // Replace with actual logged-in user ID
+    const pitchTitle = encodeURIComponent(pitch.title); // Ensure safe URL encoding
+    const pitchImage = pitch.pitchImages[0];
+    console.log(entrepreneurId,investorId,pitchTitle,pitchImage);
+
+    // Current User Id
+    try {
+      await Service.CreateSendBirdUser(investorId, authUser?.user?.name, pitchImage).
+        then(resp => {
+          console.log(resp);
+        })
+    } catch (e) {}
+    
+    // Owner User Id
+    try {
+      await Service.CreateSendBirdUser(entrepreneurId, pitch?.entrepreneur?.name, pitchImage).
+        then(resp => {
+          console.log(resp);
+        })
+
+    } catch (e) {}
+
+    //Create Channel
+    try {
+      await Service.CreateSendBirdChannel([investorId,entrepreneurId], pitchTitle).
+      then(resp=>{
+        console.log(resp);
+        console.log("Channel Created");
+        navigate('/?tab=messages', {
+          state: {
+            entrepreneurId,
+            investorId,
+            pitchTitle,
+            pitchImage
+          }
+        });
+      })
+    } catch (e) {
+      
+    }
+
+  };
+
 
 
   if (!pitch) {
@@ -111,7 +161,7 @@ const InvestorPitch = () => {
 
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-8 rounded-lg w-[50%]">
             <div className="flex justify-around items-center">
-              <Button name={"Message the owner"} className={"w-[15rem]"}></Button>
+              <Button name="Message the owner" className="w-[15rem]" handler={handleMessageOwner} />
               <Button name={"Invest"} className={"w-[15rem]"}></Button>
             </div>
           </div>
