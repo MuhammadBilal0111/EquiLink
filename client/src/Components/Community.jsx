@@ -49,7 +49,7 @@ const Community = () => {
 
   return (
     <div className="w-4/5 py-5 px-8 flex flex-col gap-4 ml-[18%]">
-      <img src="Banner.png" alt="Banner" />
+      <img src="BannerCommunity.png" alt="Banner" />
       <div className="flex items-center gap-3 justify-end text-sm">
         Filter by category:
         <SelectField 
