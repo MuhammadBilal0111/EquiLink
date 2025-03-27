@@ -68,7 +68,24 @@ class StartupController extends BaseController {
   };
 
   getAllStartups = async (req, res) => {
-    const startups = await StartupRepo.getStartups();
+    const customQuery = {
+      include: [
+        {
+          model: db.User,
+          as: "entrepreneur",
+          attributes: ["id", "name", "role", "email", "proVersion"],
+
+          include: [
+            {
+              model: db.UserProfile,
+              as: "profile",
+            },
+          ],
+        },
+      ],
+    };
+
+    const startups = await StartupRepo.getStartups(customQuery);
 
     if (!startups) {
       return this.errorResponse(res, "Failed to fetch startups", 400);
