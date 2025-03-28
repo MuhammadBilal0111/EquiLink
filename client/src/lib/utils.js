@@ -29,6 +29,7 @@ export const structuredProjects = (projects) =>
     ownerName: project[10],
     investorName: project[11],
     equity: ethers.formatUnits(project[12], 18), // Convert back to decimal,
+    status: project[13] == 0 ? "Open" : "PaidOut", // Convert back to decimal,
   }));
 
 // helper function to format the Backers

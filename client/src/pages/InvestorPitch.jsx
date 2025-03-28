@@ -4,25 +4,26 @@ import { useSelector } from "react-redux";
 import Button from "@/components/elements/Button";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import InvestForm from "@/Components/InvestForm";
 
 const InvestorPitch = () => {
   const { id } = useParams();
   const { pitches } = useSelector((state) => state.pitchStore);
 
   const pitch = pitches.find((p) => p.id === parseInt(id));
-  console.log(pitch);
-
   const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
-
 
   if (!pitch) {
     return <p className="text-white text-center mt-10">Pitch not found.</p>;
   }
-
   return (
     <div className="w-full bg-[#0A0A0A] flex flex-col text-white p-2">
-      <Link to={'/'}>
-        <img className="relative w-[120px] h-[30px] left-5 top-3 " src="/FullLogo.png" alt="logo" />
+      <Link to={"/"}>
+        <img
+          className="relative w-[120px] h-[30px] left-5 top-3 "
+          src="/FullLogo.png"
+          alt="logo"
+        />
       </Link>
       <div className="p-9 mb-4">
         <div className="flex gap-x-4 items-center pb-3">
@@ -51,7 +52,6 @@ const InvestorPitch = () => {
           >
             Download Project File
           </a>
-
         </div>
 
         <div className="mt-8 flex gap-6">
@@ -64,7 +64,6 @@ const InvestorPitch = () => {
             >
               Your browser does not support the video tag.
             </video>
-
           </div>
 
           {/* Right Section: Additional Images */}
@@ -94,8 +93,7 @@ const InvestorPitch = () => {
           <p className="my-2 text-[#D9D9D9] ">{pitch.description}</p>
         </div>
 
-
-        <div className="flex gap-5 items-center mt-5" >
+        <div className="flex gap-5 items-center mt-5">
           {/* Fundraising Info */}
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-4 rounded-lg w-[50%]">
             <div className="flex justify-between items-center">
@@ -108,16 +106,17 @@ const InvestorPitch = () => {
             </div>
           </div>
 
-
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-8 rounded-lg w-[50%]">
             <div className="flex justify-around items-center">
-              <Button name={"Message the owner"} className={"w-[15rem]"}></Button>
-              <Button name={"Invest"} className={"w-[15rem]"}></Button>
+              <Button name={"Message the owner"} className={"w-[15rem]"} />
+              <InvestForm
+                fundingGoal={pitch.fundingGoal}
+                id={pitch.entrepreneurId}
+                equity={pitch.equity}
+              />
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
   );

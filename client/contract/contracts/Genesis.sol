@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.26;
+pragma solidity ^0.8.28;
 
 contract Genesis {
     address public owner;
@@ -16,7 +16,10 @@ contract Genesis {
         uint totalInvestors;
         uint totalInvestment;
     }
-
+    enum ProjectStatus {
+        OPEN,
+        PAIDOUT
+    }
     struct projectStruct {
         uint id;
         address owner;
@@ -31,6 +34,7 @@ contract Genesis {
         string ownerName;
         string investorName;
         uint equity;
+        ProjectStatus status;
     }
 
     modifier ownerOnly() {
@@ -73,7 +77,7 @@ contract Genesis {
         project.cost = cost;
         project.equity = equity;
         project.timestamp = block.timestamp;
-
+        project.status = ProjectStatus.OPEN;
         project.ownerName = ownerName;
         projects.push(project);
         projectExist[projectCount] = true;
@@ -98,8 +102,12 @@ contract Genesis {
         require(msg.value > 0 ether, "Ether must be greater than zero");
         require(projectExist[id], "Project not found");
         require(
-            msg.value >= projects[id].cost,
-            "Ether must be greater than cost"
+            msg.value == projects[id].cost,
+            "Ether must be equal than cost"
+        );
+        require(
+            projects[id].status != ProjectStatus.PAIDOUT,
+            "Project cannot be backed"
         );
         address projectOwner = projects[id].owner;
         for (uint i = 0; i < projectsOf[projectOwner].length; i++) {
@@ -125,7 +133,16 @@ contract Genesis {
     }
     function performPayout(uint id) internal {
         uint raised = projects[id].raised;
+        projects[id].raised = 0;
         payTo(projects[id].owner, raised);
+        projects[id].status = ProjectStatus.PAIDOUT;
+        address projectOwner = projects[id].owner;
+        for (uint i = 0; i < projectsOf[projectOwner].length; i++) {
+            if (projectsOf[projectOwner][i].id == id) {
+                projectsOf[projectOwner][i].status = ProjectStatus.PAIDOUT;
+                break;
+            }
+        }
         emit Action(id, "PROJECT PAID OUT", msg.sender, block.timestamp);
     }
 
@@ -149,7 +166,10 @@ contract Genesis {
     ) public view returns (projectStruct memory) {
         return projectsOfByName[_slug];
     }
-    function getBacker(uint id) public view returns (projectStruct memory) {
+    function getProjectById(
+        uint id
+    ) public view returns (projectStruct memory) {
+        require(projects[id].owner != address(0), "Invalid project ID");
         return projects[id];
     }
 }

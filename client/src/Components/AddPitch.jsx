@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { createProject } from "@/services/blockchain";
+import { axiosInstance } from "@/lib/axios";
 
 const AddPitch = () => {
   const navigate = useNavigate();
@@ -69,13 +70,14 @@ const AddPitch = () => {
       equity: formDataObject.equity,
       cost: formDataObject.fundingGoal,
     };
-    const project = await createProject(contractData);
-    console.log(project.id);
     try {
       setLoading(true);
       const { id } = await createProject(contractData);
       if (id) {
         formData.append("contractProjectId", id);
+        formData.append("walletAddress", walletAddress);
+        formData.append("status", "open");
+
         const response = await axiosInstance.post(
           "/startups/create-startup",
           formData,
@@ -85,16 +87,14 @@ const AddPitch = () => {
             },
           }
         );
-        console.log("Response:", response.data);
+
         if (response.data.status == true) {
           setLoading(false);
           toast.success("Pitch submitted successfully!");
           navigate("/");
         } else {
-          toast.error("Something went wrong!");
+          toast.error("Error submitting pitch. Please try again.");
         }
-      } else {
-        throw new Error("Error submitting pitch. Please try again.");
       }
     } catch (error) {
       console.error("Error submitting pitch:", error);

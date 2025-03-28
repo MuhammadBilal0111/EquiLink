@@ -17,7 +17,6 @@ export const connectWallet = async () => {
       return;
     }
     const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-    toast.success("Wallet has been successfully connected!");
     return accounts[0]?.toLowerCase();
   } catch (error) {
     toast.error("Error in connecting MetaMask");
@@ -134,8 +133,9 @@ export const loadProjects = async (connectedAccount) => {
   try {
     if (!ethereum) return toast.error("Please install Metamask");
     const contract = await getEthereumContract(connectedAccount);
+    console.log(contract);
     if (!contract) {
-      ToastFailure("Failed to connect to the contract.");
+      toast.error("Failed to connect to the contract.");
       return;
     }
     const projects = await contract.getProjects();
@@ -146,7 +146,7 @@ export const loadProjects = async (connectedAccount) => {
     toast.error("Error in loading the data in contract");
   }
 };
-export const loadProject = async ({ connectedAccount, id }) => {
+export const loadProject = async (connectedAccount, id) => {
   try {
     if (!ethereum) return toast.error("Please install Metamask");
     const contract = await getEthereumContract(connectedAccount);
@@ -154,7 +154,7 @@ export const loadProject = async ({ connectedAccount, id }) => {
       ToastFailure("Failed to connect to the contract.");
       return;
     }
-    const project = await contract.getProject(id);
+    const project = await contract.getProjectById(id);
     return structuredProjects([project])[0];
   } catch (error) {
     console.log(error);
@@ -171,26 +171,24 @@ export const backProject = async (
 ) => {
   // Check if MetaMask is available
   if (!ethereum) return toast.error("Please install Metamask");
-
   const contract = await getEthereumContract(connectedAccount); // Assuming getEtheriumContract() returns a contract instance
   if (!contract) {
-    ToastFailure("Failed to connect to the contract.");
+    toast.error("Failed to connect to the contract.");
     return;
   }
   amount = ethers.parseEther(amount.toString());
-  console.log("Amount in wei:", amount.toString()); // Debug the final amount in wei
-
+  equity = ethers.parseUnits(equity.toString(), 18);
   try {
-    equity = ethers.parseUnits(equity.toString(), 18);
     const tx = await contract.backProject(id, investorName, equity, {
       from: connectedAccount,
       value: amount,
     });
 
     console.log("Transaction Hash:", tx.hash); // Log transaction hash for debugging
-    console.log("restructure", getProjectBacker(connectedAccount, id));
+    toast.success("Transaction Completed!");
+
     await tx.wait(); // Wait for the transaction to be mined
-    return true;
+    return tx;
   } catch (error) {
     console.error("Error in backing project:", error);
     toast.error("An error occurred while backing the project.");
