@@ -43,8 +43,30 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ARRAY(DataTypes.TEXT),
         allowNull: true,
       },
-      
-
+      categoryName:{
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      entrepreneurId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      investorId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      contractProjectId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      walletAddress: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       equity: {
         type: DataTypes.STRING,
         allowNull: true,
