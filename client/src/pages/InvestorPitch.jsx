@@ -9,13 +9,13 @@ import InvestForm from "@/Components/InvestForm";
 const InvestorPitch = () => {
   const { id } = useParams();
   const { pitches } = useSelector((state) => state.pitchStore);
-
   const pitch = pitches.find((p) => p.id === parseInt(id));
   const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
 
   if (!pitch) {
     return <p className="text-white text-center mt-10">Pitch not found.</p>;
   }
+
   return (
     <div className="w-full bg-[#0A0A0A] flex flex-col text-white p-2">
       <Link to={"/"}>
@@ -111,8 +111,9 @@ const InvestorPitch = () => {
               <Button name={"Message the owner"} className={"w-[15rem]"} />
               <InvestForm
                 fundingGoal={pitch.fundingGoal}
-                id={pitch.entrepreneurId}
+                id={pitch.contractProjectId}
                 equity={pitch.equity}
+                entrepreneurId={pitch.entrepreneurId}
               />
             </div>
           </div>

@@ -3,8 +3,6 @@ import { structuredProjects, generateSlug } from "@/lib/utils";
 import { ethers, parseEther } from "ethers";
 import address from "../../contract/artifacts/contractAddress.json";
 import abi from "../../contract/artifacts/contracts/Genesis.sol/Genesis.json";
-import { useDispatch } from "react-redux";
-import { profileActions } from "@/store";
 
 const contractAddress = address.address;
 const contractAbi = abi.abi;
@@ -26,56 +24,52 @@ export const connectWallet = async () => {
 
 // function for connecting the wallet
 export const isWalletConnected = async () => {
-  const dispatch = useDispatch();
   try {
-    if (!ethereum) {
+    if (typeof ethereum === "undefined") {
       toast.error("Please install MetaMask");
-      return;
+      return null;
     }
 
     const accounts = await ethereum.request({ method: "eth_accounts" });
 
-    if (accounts.length === 0) {
+    if (!accounts.length) {
       toast.error("Please connect your wallet.");
       console.log("No accounts found.");
-      return;
+      return null;
     }
 
     const walletAddress = accounts[0].toLowerCase();
-    dispatch(profileActions.setWalletAddress(walletAddress));
 
-    console.log("Connected Wallet:", walletAddress);
-
-    // Ensure event listeners are added only once
+    // Add listeners once
     if (!ethereum._eventsAdded) {
-      ethereum._eventsAdded = true; // Flag to prevent duplicate listeners
+      ethereum._eventsAdded = true;
 
-      // Reload the page on network change
-      ethereum.on("chainChanged", () => {
+      window.ethereum.on("chainChanged", () => {
         window.location.reload();
       });
 
-      // Update wallet connectedAccount when account changes
-      ethereum.on("accountsChanged", async (newAccounts) => {
+      window.ethereum.on("accountsChanged", (newAccounts) => {
         if (newAccounts.length) {
           const newWalletAddress = newAccounts[0].toLowerCase();
-          dispatch(profileActions.setWalletAddress(newWalletAddress));
           console.log("Wallet changed to:", newWalletAddress);
+          window.location.reload(); // or update state if in React
         } else {
-          dispatch(profileActions.setWalletAddress(null));
           toast.error("Wallet disconnected.");
         }
       });
     }
+
+    return walletAddress;
   } catch (error) {
     toast.error("Error connecting to MetaMask");
     console.error("MetaMask Connection Error:", error);
+    return null;
   }
 };
 
 // getting ethereum contract
 export const getEthereumContract = async (walletAddress) => {
-  let connectedAccount;
+  let connectedAccount = walletAddress;
   try {
     if (!walletAddress) {
       connectedAccount = await connectWallet();
@@ -106,7 +100,7 @@ export const createProject = async ({
     if (!ethereum) return toast.error("Please install Metamask");
     const contract = await getEthereumContract(connectedAccount);
     if (!contract) {
-      ToastFailure("Failed to connect to the contract.");
+      toast.error("Failed to connect to the contract.");
       return;
     }
     equity = ethers.parseUnits(equity.toString(), 18); // Scale to 18 decimals
@@ -123,6 +117,7 @@ export const createProject = async ({
     );
     await tx.wait();
     const projects = await loadProjects(); // for testing
+
     return projects[projects.length - 1];
   } catch (error) {
     console.log(error);
@@ -169,6 +164,13 @@ export const backProject = async (
   investorName,
   equity
 ) => {
+  console.log("Contract", await loadProjects(connectedAccount));
+  console.log("Connected Account:", connectedAccount);
+  console.log("Project ID:", id);
+  console.log("Investment Amount:", amount);
+  console.log("Investor Name:", investorName);
+  console.log("Equity:", equity);
+
   // Check if MetaMask is available
   if (!ethereum) return toast.error("Please install Metamask");
   const contract = await getEthereumContract(connectedAccount); // Assuming getEtheriumContract() returns a contract instance

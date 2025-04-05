@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import InputField from "./elements/InputField";
 import Button from "./elements/Button";
@@ -9,17 +9,15 @@ import { axiosInstance } from "@/lib/axios";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useSelector } from "react-redux";
-import { createProject } from "@/services/blockchain";
-import { axiosInstance } from "@/lib/axios";
+import { createProject, isWalletConnected } from "@/services/blockchain";
 
 const AddPitch = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-
+  const [walletAddress, setWalletAddress] = useState(""); // store wallet address
   const [imageFiles, setImageFiles] = useState([]);
   const [videoFile, setVideoFile] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
-
   // Refs for form fields
   const nameRef = useRef(null);
   const [category, setCategory] = useState("");
@@ -37,8 +35,16 @@ const AddPitch = () => {
   };
 
   const { profile } = useSelector((store) => store.profileStore);
-  const { walletAddress } = useSelector((store) => store.profileStore);
-  console.log(profile, "from pitches");
+
+  useEffect(() => {
+    const fetchWalletAddress = async () => {
+      const address = await isWalletConnected();
+      if (address) {
+        setWalletAddress(address);
+      }
+    };
+    fetchWalletAddress();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +55,6 @@ const AddPitch = () => {
     formData.append("fundingGoal", askForProjectRef.current.value);
     formData.append("equity", equityRef.current.value);
     formData.append("description", projectDescriptionRef.current.value);
-
     formData.append("projectFile", pdfFile);
     formData.append("pitchVideo", videoFile);
 
@@ -60,6 +65,7 @@ const AddPitch = () => {
     for (let [key, value] of formData.entries()) {
       console.log(key, value);
     }
+
     const formDataObject = Object.fromEntries(formData.entries()); // access the form data object
     const contractData = {
       connectedAccount: walletAddress,
@@ -70,6 +76,7 @@ const AddPitch = () => {
       equity: formDataObject.equity,
       cost: formDataObject.fundingGoal,
     };
+
     try {
       setLoading(true);
       const { id } = await createProject(contractData);
@@ -77,7 +84,6 @@ const AddPitch = () => {
         formData.append("contractProjectId", id);
         formData.append("walletAddress", walletAddress);
         formData.append("status", "open");
-
         const response = await axiosInstance.post(
           "/startups/create-startup",
           formData,

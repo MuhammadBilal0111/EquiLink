@@ -1,6 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button as Btn } from "@/components/ui/button";
-import Button from "./elements/Button";
 import {
   Dialog,
   DialogContent,
@@ -12,52 +11,68 @@ import {
 } from "@/Components/ui/dialog";
 import InputField from "./elements/InputField";
 import { useSelector } from "react-redux";
-import { backProject, loadProject, loadProjects } from "@/services/blockchain";
+import { backProject, isWalletConnected } from "@/services/blockchain";
 import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 
-export default function DialogForm({ fundingGoal, id, equity }) {
-  const { walletAddress, profile } = useSelector((store) => store.profileStore);
+export default function InvestForm({
+  fundingGoal,
+  id,
+  equity,
+  entrepreneurId,
+}) {
+
+  const { profile } = useSelector((store) => store.profileStore);
   const [open, setOpen] = useState(false);
-  const emailRef = useRef(null);
-  const telephoneRef = useRef(null);
-  const equityRef = useRef(null);
+  const [email, setEmail] = useState(profile?.user?.email || "");
+  const [telephone, setTelephone] = useState("");
+  const [projectEquity, setProjectEquity] = useState(equity);
+  const [walletAddress, setWalletAddress] = useState("");
+
+  useEffect(() => {
+    const fetchWalletAddress = async () => {
+      const address = await isWalletConnected();
+      if (address) {
+        setWalletAddress(address);
+      }
+    };
+    fetchWalletAddress();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (
-        emailRef.current.value &&
-        fundingGoal &&
-        telephoneRef.current.value &&
-        equityRef.current.value
-      ) {
+      if (email && fundingGoal && telephone && projectEquity) {
         const tx = await backProject(
           walletAddress,
           id,
           fundingGoal,
           profile?.user?.name,
-          equityRef.current.value
+          projectEquity
         );
         const transactionData = {
-          email: emailRef.current.value,
+          entrepreneurId,
+          email,
           transactionHash: tx.hash,
-          telephoneNo: telephoneRef.current.value,
-          equity: equityRef.current.value,
+          telephoneNo: telephone,
+          equity: projectEquity,
           senderWallet: walletAddress,
           status: "PaidOut",
         };
-        const result = await axiosInstance.put("/transaction", transactionData);
-        if (result.status === "success") {
-          toast.success("Transaction completed!");
-        } else {
-          toast.error("Error in making transaction");
-        }
+        console.log("Transaction Data:", transactionData);
+
+        // const result = await axiosInstance.put("/transaction", transactionData);
+        // if (result.status === "success") {
+        //   toast.success("Transaction completed!");
+        // } else {
+        //   toast.error("Error in making transaction");
+        // }
       } else {
-        toast.error("Fill all fields");
+        toast.error("Please fill all fields.");
       }
     } catch (error) {
-      toast.error("Error in making transaction");
+      toast.error("Error in making transaction.");
+      console.log(error);
     }
   };
 
@@ -82,8 +97,8 @@ export default function DialogForm({ fundingGoal, id, equity }) {
               placeholder="your@email.com"
               type="email"
               className="w-full"
-              value={profile?.user?.email}
-              ref={emailRef}
+              value={email}
+              handler={(e) => setEmail(e.target.value)}
               required
             />
 
@@ -102,7 +117,8 @@ export default function DialogForm({ fundingGoal, id, equity }) {
               type="tel"
               placeholder="+92-XXXXXXXXXX"
               className="w-full"
-              ref={telephoneRef}
+              value={telephone}
+              handler={(e) => setTelephone(e.target.value)}
               required
             />
 
@@ -110,14 +126,14 @@ export default function DialogForm({ fundingGoal, id, equity }) {
               label="Equity (%)"
               placeholder="Enter percentage of equity you offer"
               type="text"
-              value={equity}
-              ref={equityRef}
+              value={projectEquity}
+              handler={(e) => setProjectEquity(e.target.value)}
               className="w-full"
               required
             />
           </div>
           <DialogFooter>
-            <Btn type="submit" className={"cursor-pointer"}>
+            <Btn type="submit" className="cursor-pointer">
               Confirm Investment
             </Btn>
           </DialogFooter>
