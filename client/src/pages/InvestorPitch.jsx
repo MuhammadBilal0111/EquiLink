@@ -20,10 +20,13 @@ const InvestorPitch = () => {
 
   const handleMessageOwner = async() => {
     const entrepreneurId = pitch.entrepreneur?.id;
-    const investorId = authUser?.user?.id; // Replace with actual logged-in user ID
+    const investorEmail = authUser?.user?.email;
+    const investorId = investorEmail?.split("@")[0];
     const pitchTitle = encodeURIComponent(pitch.title); // Ensure safe URL encoding
     const pitchImage = pitch.pitchImages[0];
     console.log(entrepreneurId,investorId,pitchTitle,pitchImage);
+    console.log(typeof investorId, investorId); // should be "string"
+
 
     // Current User Id
     try {
@@ -46,16 +49,9 @@ const InvestorPitch = () => {
     try {
       await Service.CreateSendBirdChannel([investorId,entrepreneurId], pitchTitle).
       then(resp=>{
-        console.log(resp);
+        console.log("Channel creation",resp);
         console.log("Channel Created");
-        navigate('/?tab=messages', {
-          state: {
-            entrepreneurId,
-            investorId,
-            pitchTitle,
-            pitchImage
-          }
-        });
+        navigate('/?tab=messages');
       })
     } catch (e) {
       
