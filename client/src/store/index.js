@@ -1,6 +1,5 @@
 // import {configureStore, createSlice} from "@reduxjs/toolkit"
 
-
 // const userSlice = createSlice({
 //     name: "User",
 //     initialState: { authUser: null },
@@ -26,18 +25,14 @@
 //   },
 // })
 
-
-
 // const store = configureStore({reducer:{
 //     userStore: userSlice.reducer,
 //     profileStore: profileSlice.reducer
 // }});
 
-
 // export const userActions = userSlice.actions;
 // export const profileActions = profileSlice.actions
 // export default store;
-
 
 // import { configureStore, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import { axiosInstance } from "@/lib/axios";
@@ -62,7 +57,6 @@
 //       equity
 //   }));
 // });
-
 
 // // Pitch slice
 // const pitchSlice = createSlice({
@@ -125,9 +119,11 @@
 // export const profileActions = profileSlice.actions;
 // export default store;
 
-
-
-import { configureStore, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createSlice,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 import { axiosInstance } from "@/lib/axios";
 
 // // Async thunk to fetch and filter pitches
@@ -139,7 +135,6 @@ import { axiosInstance } from "@/lib/axios";
 //   console.log("API Response:", response.data); // Debugging log
 //   console.log("Data Array:", response.data.data); // Debugging log
 // });
-
 
 // // Pitch slice
 // const pitchSlice = createSlice({
@@ -162,57 +157,63 @@ import { axiosInstance } from "@/lib/axios";
 //     },
 // });
 
-export const fetchPitches = createAsyncThunk("pitches/fetchPitches", async () => {
+export const fetchPitches = createAsyncThunk(
+  "pitches/fetchPitches",
+  async () => {
     const response = await axiosInstance.get("/startups/get-all-startups");
     // console.log("API Response:", response.data); // Debugging log
     // console.log("Data Array:", response.data.data); // Debugging log
     return response.data.data;
-});
+  }
+);
 
 const pitchSlice = createSlice({
-    name: "Pitches",
-    initialState: { pitches: [] },
-    reducers: {
-        setPitches: (state, action) => {
-            state.pitches = action.payload;
-        },
+  name: "Pitches",
+  initialState: { pitches: [] },
+  reducers: {
+    setPitches: (state, action) => {
+      state.pitches = action.payload;
     },
+  },
 });
 
 // User slice
 const userSlice = createSlice({
-    name: "User",
-    initialState: { authUser: null },
-    reducers: {
-        setUser: (state, action) => {
-            state.authUser = action.payload;
-        },
+  name: "User",
+  initialState: { authUser: null },
+  reducers: {
+    setUser: (state, action) => {
+      state.authUser = action.payload;
     },
+  },
 });
 
 // Profile slice
 const profileSlice = createSlice({
-    name: "Profile",
-    initialState: { profile: null },
-    reducers: {
-        setProfile: (state, action) => {
-            state.profile = action.payload;
-        },
+  name: "Profile",
+  initialState: { profile: null, walletAddress: null },
+  reducers: {
+    setProfile: (state, action) => {
+      state.profile = action.payload;
     },
-    extraReducers: (builder) => {
-        builder.addCase(userSlice.actions.setUser, (state, action) => {
-            state.profile = action.payload;
-        });
+    setWalletAddress: (state, action) => {
+      state.walletAddress = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(userSlice.actions.setUser, (state, action) => {
+      state.profile = action.payload;
+    });
+  },
 });
 
 // Configure store
 const store = configureStore({
-    reducer: {
-        userStore: userSlice.reducer,
-        profileStore: profileSlice.reducer,
-        pitchStore: pitchSlice.reducer,
-    },
+  reducer: {
+    userStore: userSlice.reducer,
+    profileStore: profileSlice.reducer,
+    pitchStore: pitchSlice.reducer,
+  },
 });
 
 export const userActions = userSlice.actions;

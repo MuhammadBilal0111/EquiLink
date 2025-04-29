@@ -99,7 +99,7 @@
 
 export const APP_ID =import.meta.env.VITE_SENDBIRD_APP_ID
 // set your own USER_ID and NICKNAME
-export const USER_ID = 
+export const USER_ID = "hello"
 export const NICKNAME = 'Sendbirdian84'
 
 export default {

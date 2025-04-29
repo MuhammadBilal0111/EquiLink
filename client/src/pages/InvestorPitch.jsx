@@ -184,6 +184,9 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Button from "@/components/elements/Button";
 import { CheckSendBirdUser, CreateSendBirdUser, CreateSendBirdChannel } from "@/constants/Service";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import InvestForm from "@/Components/InvestForm";
 
 const InvestorPitch = () => {
   const { id } = useParams();
@@ -191,12 +194,12 @@ const InvestorPitch = () => {
   const { authUser } = useSelector((state) => state.userStore);
 
   const pitch = pitches.find((p) => p.id === parseInt(id));
+  const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
 
   if (!pitch) {
     return <p className="text-white text-center mt-10">Pitch not found.</p>;
   }
 
-  const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
   const navigate = useNavigate();
 
   const handleMessageOwner = async () => {
@@ -303,6 +306,8 @@ const InvestorPitch = () => {
         </div>
 
         <div className="flex gap-5 items-center mt-5">
+          {/* Fundraising Info */}
+        <div className="flex gap-5 items-center mt-5">
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-4 rounded-lg w-[50%]">
             <div className="flex justify-between items-center">
               <p className="text-sm text-[#D9D9D9]">Fundraising Goal:</p>
@@ -318,11 +323,18 @@ const InvestorPitch = () => {
             <div className="flex justify-around items-center">
               <Button name="Message the owner" className="w-[15rem]" handler={handleMessageOwner} />
               <Button name={"Invest"} className={"w-[15rem]"}></Button>
+              <Button name={"Message the owner"} className={"w-[15rem]"} />
+              <InvestForm
+                fundingGoal={pitch.fundingGoal}
+                id={pitch.contractProjectId}
+                equity={pitch.equity}
+                entrepreneurId={pitch.entrepreneurId}
+              />
             </div>
           </div>
         </div>
-
       </div>
+    </div>
     </div>
   );
 };

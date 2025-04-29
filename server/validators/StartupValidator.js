@@ -32,6 +32,27 @@ class StartupValidator extends BaseValidator {
       projectFile: Joi.string().optional().messages({
         "string.base": "Project file must be a string",
       }),
+      categoryName: Joi.string().optional().messages({
+        "string.base": "Category name must be a string",
+        "any.required": "Category name is required",
+      }),
+      entrepreneurId: Joi.number().optional().messages({
+        "number.base": "Entrepreneur ID must be a number",
+        "any.required": "Entrepreneur ID is required",
+      }),
+      investorId: Joi.number().optional().messages({
+        "number.base": "Investor ID must be a number",
+      }),
+
+      contractProjectId: Joi.string().optional().messages({
+        "string.base": "Contract project ID must be a string",
+      }),
+      walletAddress: Joi.string().optional().messages({
+        "string.base": "Wallet address must be a string",
+      }),
+      status: Joi.string().optional().messages({
+        "string.base": "Status must be a string",
+      }),
     });
 
     return schema.validate(data, { abortEarly: false });
@@ -62,6 +83,26 @@ class StartupValidator extends BaseValidator {
       }),
       projectFile: Joi.string().optional().messages({
         "string.base": "Project file must be a string",
+      }),
+      categoryName: Joi.string().optional().messages({
+        "string.base": "Category name must be a string",
+        "any.required": "Category name is required",
+      }),
+      entrepreneurId: Joi.number().optional().messages({
+        "number.base": "Entrepreneur ID must be a number",
+        "any.required": "Entrepreneur ID is required",
+      }),
+      investorId: Joi.number().optional().messages({
+        "number.base": "Investor ID must be a number",
+      }),
+      contractProjectId: Joi.string().optional().messages({
+        "string.base": "Contract project ID must be a string",
+      }),
+      walletAddress: Joi.string().optional().messages({
+        "string.base": "Wallet address must be a string",
+      }),
+      status: Joi.string().optional().messages({
+        "string.base": "Status must be a string",
       }),
     });
 
