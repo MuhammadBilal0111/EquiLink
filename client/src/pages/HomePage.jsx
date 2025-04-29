@@ -25,7 +25,7 @@ const HomePage = () => {
       {activeTab === "dashboard" && (authUser?.user?.role === "Entrepreneur" ? <Dashboard /> : <InvestorHome/>)}
       {activeTab === "profile" && <Profile />}
       {activeTab === "wallet" && <Wallet />}
-      {activeTab === "messages" && <Messages />}
+      {/* {activeTab === "messages" && <Messages />} */}
       {activeTab === "invested-pitches" && <InvestedPitches />}
       {activeTab === "community" && <Community />}
     </div>

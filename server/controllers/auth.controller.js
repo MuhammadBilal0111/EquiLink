@@ -4,6 +4,7 @@ const { Op, where } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserRepo = require("../repos/UserRepo.js");
+const User = require("./../models/user.mongoModel.js")
 const {
   validateLoginUser,
   validateSignUpUser,
@@ -14,8 +15,8 @@ const transporter = require("../utils/email.js");
 const { constants } = require("../utils/constant.js");
 
 class AuthController extends BaseController {
-  signToken = (userResponse, res) => {
-    const token = jwt.sign({ data: userResponse }, jwtSecret, {
+  signToken = (userResponse,id, res) => {
+    const token = jwt.sign({ data: userResponse , id:id}, jwtSecret, {
       expiresIn: constants.expiresIn,
     });
 
@@ -60,9 +61,11 @@ class AuthController extends BaseController {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
-    let token = this.signToken(JSON.stringify(user), res);
+    const mongoUser = await User.findOne({email:email}).select("+password");
 
-    return this.successResponse(res, { user, token }, "login Successful");
+    let token = this.signToken(JSON.stringify(user),mongoUser._id, res);
+
+    return this.successResponse(res, { user,mongoUser, token }, "login Successful");
   };
 
   signUpUser = async (req, res) => {
@@ -90,6 +93,7 @@ class AuthController extends BaseController {
     otherFields.password = newPassword;
 
     const user = await UserRepo?.createUser(otherFields);
+    const mongoUser = await User.create({email:otherFields.email,password, name:otherFields.name})
 
     if (!user) return this.errorResponse(res, "User not created", 400);
 
@@ -97,8 +101,11 @@ class AuthController extends BaseController {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
-    return this.successResponse(res, user, "User created successfully");
+    return this.successResponse(res, user,mongoUser, "User created successfully");
   };
+
+
+
 
   changePassword = async (req, res) => {
     const { email, oldPassword, newPassword } = req.body;

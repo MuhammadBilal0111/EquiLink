@@ -4,9 +4,11 @@ const { authMiddleware } = require("../middlewares/auth.middleware.js");
 const userRoutes = require("./user.route.js");
 const authRoutes = require("./auth.route.js");
 const startupRoutes = require("./startup.route.js");
+const messageRoutes = require("./message.route.js")
 
 router.use("/auth", authRoutes);
 router.use("/users", authMiddleware, userRoutes);
 router.use("/startups", authMiddleware, startupRoutes);
+router.use("/messages",messageRoutes)
 
 module.exports = router;

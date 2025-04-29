@@ -11,6 +11,7 @@ import { profileActions, userActions } from "./store";
 import AddPitch from "./Components/AddPitch";
 import Pitch from "./pages/Pitch";
 import InvestorPitch from "./pages/InvestorPitch"
+import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
 
 
 
@@ -39,6 +40,9 @@ function App() {
 
   return (
     <>
+      <SendbirdProvider       
+      appId={import.meta.env.VITE_SENDBIRD_APP_ID} 
+      userId={authUser?.user?.id} >
       <Routes>
         <Route path="/" element={!authUser ? <LandingPage/> : <HomePage/>}/>
         <Route path="/signup" element={(!authUser || !user) ? <SignupPage /> : <Navigate to="/" />}/>
@@ -49,6 +53,7 @@ function App() {
 />
 
       </Routes>
+      </SendbirdProvider>
     </>
   );
 }
