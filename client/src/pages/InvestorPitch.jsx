@@ -183,9 +183,8 @@ import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Button from "@/components/elements/Button";
-import { CheckSendBirdUser, CreateSendBirdUser, CreateSendBirdChannel } from "@/constants/Service";
+// import { CheckSendBirdUser, CreateSendBirdUser, CreateSendBirdChannel } from "@/constants/Service";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
-import { Link } from "react-router-dom";
 import InvestForm from "@/Components/InvestForm";
 
 const InvestorPitch = () => {
@@ -200,40 +199,40 @@ const InvestorPitch = () => {
     return <p className="text-white text-center mt-10">Pitch not found.</p>;
   }
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const handleMessageOwner = async () => {
-    const entrepreneurId = pitch.entrepreneur?.id;
-    const investorId = authUser?.user?.id; 
-    const pitchTitle = encodeURIComponent(pitch.title);
-    const pitchImage = pitch.pitchImages[0];
+  // const handleMessageOwner = async () => {
+  //   const entrepreneurId = pitch.entrepreneur?.id;
+  //   const investorId = authUser?.user?.id; 
+  //   const pitchTitle = encodeURIComponent(pitch.title);
+  //   const pitchImage = pitch.pitchImages[0];
   
-    try {
-      // Check if Investor exists in SendBird, create if not
-      const investorExists = await CheckSendBirdUser(investorId);
-      if (!investorExists) {
-        await CreateSendBirdUser(investorId, authUser?.user?.name, pitchImage);
-      }
+  //   try {
+  //     // Check if Investor exists in SendBird, create if not
+  //     const investorExists = await CheckSendBirdUser(investorId);
+  //     if (!investorExists) {
+  //       await CreateSendBirdUser(investorId, authUser?.user?.name, pitchImage);
+  //     }
   
-      // Check if Entrepreneur exists in SendBird, create if not
-      const entrepreneurExists = await CheckSendBirdUser(entrepreneurId);
-      if (!entrepreneurExists) {
-        await CreateSendBirdUser(entrepreneurId, pitch?.entrepreneur?.name, pitchImage);
-      }
+  //     // Check if Entrepreneur exists in SendBird, create if not
+  //     const entrepreneurExists = await CheckSendBirdUser(entrepreneurId);
+  //     if (!entrepreneurExists) {
+  //       await CreateSendBirdUser(entrepreneurId, pitch?.entrepreneur?.name, pitchImage);
+  //     }
   
-      // Create Chat Channel
-      await CreateSendBirdChannel([investorId, entrepreneurId], pitchTitle);
-      console.log("Channel Created");
+  //     // Create Chat Channel
+  //     await CreateSendBirdChannel([investorId, entrepreneurId], pitchTitle);
+  //     console.log("Channel Created");
   
-      // Navigate to messages tab
-      navigate('/?tab=messages', {
-        state: { entrepreneurId, investorId, pitchTitle, pitchImage }
-      });
+  //     // Navigate to messages tab
+  //     navigate('/?tab=messages', {
+  //       state: { entrepreneurId, investorId, pitchTitle, pitchImage }
+  //     });
   
-    } catch (error) {
-      console.error("Error in messaging owner:", error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error in messaging owner:", error);
+  //   }
+  // };
   
 
   return (

@@ -45,7 +45,7 @@ const Community = () => {
     }
   }, [selectedCategory, pitches]);
   console.log(authUser.user.id, "community")
-
+  
 
   return (
     <div className="w-4/5 py-5 px-8 flex flex-col gap-4 ml-[18%]">

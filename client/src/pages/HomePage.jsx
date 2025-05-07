@@ -5,7 +5,7 @@ import InvestorHome from "@/Components/InvestorHome";
 import Profile from "@/Components/Profile";
 import Sidebar from "@/Components/Sidebar";
 import Wallet from "@/Components/Wallet";
-import Messages from "@/Components/Messages";
+// import Messages from "@/Components/Messages";
 import InvestedPitches from "@/Components/InvestedPitches";
 import Community from "@/components/community";
 import { useLocation } from "react-router-dom";
