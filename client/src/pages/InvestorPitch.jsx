@@ -19,7 +19,8 @@ const InvestorPitch = () => {
   const navigate = useNavigate();
 
   const handleMessageOwner = async() => {
-    const entrepreneurId = pitch.entrepreneur?.id;
+    const entrepreneurId = pitch.entrepreneur?.email.split("@")[0];
+    console.log("Enter:", pitch.entrepreneur);
     const investorEmail = authUser?.user?.email;
     const investorId = investorEmail?.split("@")[0];
     const pitchTitle = encodeURIComponent(pitch.title); // Ensure safe URL encoding

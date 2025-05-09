@@ -29,7 +29,8 @@ const Messages = () => {
               }}
               channelListQueryParams={{
                 includeEmpty: true,
-                memberStateFilter: "joined_only",
+                memberStateFilter: "all",
+                showMember: true,
               }}
             />
           </div>
