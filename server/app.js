@@ -4,7 +4,6 @@ const cors = require("cors");
 const routes = require("./router/routes.js");
 const errorMiddleware = require("./middlewares/error.middleware.js");
 const cookieParser = require("cookie-parser");
-const mongoDB = require("./config/mongo.connection.js")
 
 const app = express();
 
@@ -16,7 +15,6 @@ app.use(cookieParser());
 const allowedOrigins = "http://localhost:5173";
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-mongoDB();
 
 app.use("/api",  routes);
 

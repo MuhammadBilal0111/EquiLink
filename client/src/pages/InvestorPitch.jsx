@@ -195,6 +195,52 @@ const InvestorPitch = () => {
   const pitch = pitches.find((p) => p.id === parseInt(id));
   const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
 
+  const navigate = useNavigate();
+
+  const handleMessageOwner = async() => {
+    const entrepreneurId = pitch.entrepreneur?.email.split("@")[0];
+    console.log("Enter:", pitch.entrepreneur);
+    const investorEmail = authUser?.user?.email;
+    const investorId = investorEmail?.split("@")[0];
+    const pitchTitle = encodeURIComponent(pitch.title); // Ensure safe URL encoding
+    const pitchImage = pitch.pitchImages[0];
+    console.log(entrepreneurId,investorId,pitchTitle,pitchImage);
+    console.log(typeof investorId, investorId); // should be "string"
+
+
+    // Current User Id
+    try {
+      await Service.CreateSendBirdUser(investorId, authUser?.user?.name, pitchImage).
+        then(resp => {
+          console.log(resp);
+        })
+    } catch (e) {}
+    
+    // Owner User Id
+    try {
+      await Service.CreateSendBirdUser(entrepreneurId, pitch?.entrepreneur?.name, pitchImage).
+        then(resp => {
+          console.log(resp);
+        })
+
+    } catch (e) {}
+
+    //Create Channel
+    try {
+      await Service.CreateSendBirdChannel([investorId,entrepreneurId], pitchTitle).
+      then(resp=>{
+        console.log("Channel creation",resp);
+        console.log("Channel Created");
+        navigate('/?tab=messages');
+      })
+    } catch (e) {
+      
+    }
+
+  };
+
+
+
   if (!pitch) {
     return <p className="text-white text-center mt-10">Pitch not found.</p>;
   }
@@ -322,7 +368,6 @@ const InvestorPitch = () => {
             <div className="flex justify-around items-center">
               <Button name="Message the owner" className="w-[15rem]" handler={handleMessageOwner} />
               <Button name={"Invest"} className={"w-[15rem]"}></Button>
-              <Button name={"Message the owner"} className={"w-[15rem]"} />
               <InvestForm
                 fundingGoal={pitch.fundingGoal}
                 id={pitch.contractProjectId}

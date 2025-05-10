@@ -1,7 +1,6 @@
 const UserRepo = require("../repos/UserRepo.js");
 const jwt = require("jsonwebtoken");
 const { jwtSecret } = require("../config/config.js");
-const User = require("./../models/user.mongoModel.js");
 
 // ibad:
 // const authorize = (requiredRole) => {
@@ -66,12 +65,6 @@ const authMiddleware = async (req, res, next) => {
     if (!decodedToken) {
       return res.status(401).json({ message: "invalid token" });
     }
-    const user = await User.findById(decodedToken.id).select("-password");
-
-    if (!user) {
-      return res.status(401).json({ message: "Invalid or expired token" });
-    }
-    req.mongoUser = user;
   } 
   catch (err) {
     return res.status(400).json("Something went wrong");
