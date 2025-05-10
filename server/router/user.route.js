@@ -11,6 +11,11 @@ router.post(
 );
 
 router.get("/get-userProfile/:id?", UserController.getUserProfile);
-router.patch("/update-userProfile", UserController.updateUserProfile);
+router.patch("/update-userProfile",  UserController.updateUserProfile);
+
+router.delete(
+  "/delete-user",
+  UserController.deleteUser
+);
 
 module.exports = router;

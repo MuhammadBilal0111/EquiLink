@@ -135,6 +135,40 @@ class UserController extends BaseController {
 
     return this.successResponse(res, updatedUserProfile);
   };
+
+
+  deleteUser = async (req, res) => {
+    const {id} = req.body;
+    const userId = req.user.id;
+
+    if(!id){
+      return this.validationErrorResponse(res, "User ID is required");
+    }
+
+    const user = await UserRepo.findById(id);
+
+    console.log("user : ", JSON.stringify(user));
+
+    if(!user){
+      return this.validationErrorResponse(res, "User not found");
+    }
+
+    if(user.role !== "admin"){
+      return this.validationErrorResponse(res, "You cannot delete this user");
+    }
+
+    if(userId == user.id){
+      return this.validationErrorResponse(res, "You cannot delete your own account");
+    }
+
+    const deletedUser = await UserRepo.deleteUser(id);
+
+    if (!deletedUser) {
+      return this.errorResponse(res, "Failed to delete user", 400);
+    }
+
+    return this.successResponse(res, deletedUser, "User deleted successfully");
+  }
 }
 
 module.exports = new UserController();

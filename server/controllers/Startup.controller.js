@@ -93,6 +93,64 @@ class StartupController extends BaseController {
 
     return this.successResponse(res, startups, "Startups fetched successfully");
   };
+
+  updateStartups = async (req, res) => {
+    const {id} = req.body;
+    const userId = req.user.id;
+
+    if(!id){
+      return this.validationErrorResponse(res, "Startup ID is required");
+    }
+
+
+    const startup = await StartupRepo.findById(id);
+
+    if(!startup){
+      return this.validationErrorResponse(res, "Startup not found");
+    }
+
+    // if(userId == startup.entrepreneurId){
+    //   return this.validationErrorResponse(res, "You are not authorized to update this startup");
+    // }
+
+    const updatedStartup = await StartupRepo.updateStartup(
+      {
+        ...req.body,
+        investorId: userId,
+      },
+      id
+    );
+
+    if (!updatedStartup) {
+      return this.errorResponse(res, "Failed to update startup", 400);
+    }
+
+    return this.successResponse(res, updatedStartup, "Startup updated successfully");
+  };
+
+  deleteStartup = async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+      return this.validationErrorResponse(res, "Startup ID is required");
+    }
+
+    const startup = await StartupRepo.findById(id);
+
+    if (!startup) {
+      return this.validationErrorResponse(res, "Startup not found");
+    }
+
+    const deletedStartup = await StartupRepo.deleteStartup(id);
+
+    if (!deletedStartup) {
+      return this.errorResponse(res, "Failed to delete startup", 400);
+    }
+
+    return this.successResponse(res, deletedStartup, "Startup deleted successfully");
+  };
+
+
 }
 
 module.exports = new StartupController();
