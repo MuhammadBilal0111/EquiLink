@@ -68,33 +68,43 @@ class StartupController extends BaseController {
   };
 
   getAllStartups = async (req, res) => {
-    const customQuery = {
-      include: [
-        {
-          model: db.User,
-          as: "entrepreneur",
-          attributes: ["id", "name", "role", "email", "proVersion"],
-
-          include: [
-            {
-              model: db.UserProfile,
-              as: "profile",
-            },
-          ],
+  const customQuery = {
+    where: {
+      isDeleted: false,
+      status: 'pending',
+    },
+    include: [
+      {
+        model: db.User,
+        as: "entrepreneur",
+        attributes: ["id", "name", "role", "email", "proVersion"],
+        where : {
+          isDeleted: false,
         },
-        {
-          model : db.User,
-          as : "investor",
-          attributes: ["id", "name", "role", "email", "proVersion"],
-          include: [
-            {
-              model: db.UserProfile,
-              as: "profile",
-            },
-          ],
-        },
-      ],
-    };
+        include: [
+          {
+            model: db.UserProfile,
+            as: "profile",
+          },
+        ],
+      },
+      {
+        model: db.User,
+        as: "investor",
+        attributes: ["id", "name", "role", "email", "proVersion"],
+        include: [
+          {
+            model: db.UserProfile,
+            as: "profile",
+          },
+        ],
+      },
+    ],
+    order: [
+      [db.sequelize.literal('"entrepreneur"."proVersion"'), 'DESC'], 
+      ['createdAt', 'DESC'], 
+    ],
+  };
 
     const startups = await StartupRepo.getStartups(customQuery);
 
@@ -103,7 +113,8 @@ class StartupController extends BaseController {
     }
 
     return this.successResponse(res, startups, "Startups fetched successfully");
-  };
+  }
+
 
   updateStartups = async (req, res) => {
     const {id} = req.body;
