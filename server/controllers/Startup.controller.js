@@ -82,6 +82,17 @@ class StartupController extends BaseController {
             },
           ],
         },
+        {
+          model : db.User,
+          as : "investor",
+          attributes: ["id", "name", "role", "email", "proVersion"],
+          include: [
+            {
+              model: db.UserProfile,
+              as: "profile",
+            },
+          ],
+        },
       ],
     };
 
@@ -149,8 +160,6 @@ class StartupController extends BaseController {
 
     return this.successResponse(res, deletedStartup, "Startup deleted successfully");
   };
-
-
 }
 
 module.exports = new StartupController();

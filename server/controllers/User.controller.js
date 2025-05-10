@@ -4,6 +4,7 @@ const { validateCreateUserProfile } = require("../validators/UserValidator.js");
 const UserProfileRepo = require("../repos/UserProfile.js");
 const UserRepo = require("../repos/UserRepo.js");
 const BlobStorageService = require("../services/BlobStorageService.js");
+const { where } = require("sequelize");
 
 class UserController extends BaseController {
   
@@ -96,6 +97,9 @@ class UserController extends BaseController {
           model: db.User,
           as: "user",
           attributes: ["id", "name", "email", "role","proVersion"],
+          where:{
+            isDeleted: false,
+          }
         },
       ],
     };
@@ -109,11 +113,14 @@ class UserController extends BaseController {
       userProfile = await UserProfileRepo.getUserProfiles(customQuery);
     }
 
+    console.log("custom query : ", customQuery)
+    console.log("userProfile : ", JSON.stringify(userProfile, null, 2));
+
     if (!userProfile) {
       return this.errorResponse(res, "User profile not found", 400);
     }
 
-    return this.successResponse(res, userProfile);
+    return this.successResponse(res,userProfile,"user profile retrieved successfully");
   };
 
   updateUserProfile = async (req, res) => {
@@ -136,10 +143,12 @@ class UserController extends BaseController {
     return this.successResponse(res, updatedUserProfile);
   };
 
-
   deleteUser = async (req, res) => {
     const {id} = req.body;
     const userId = req.user.id;
+
+    console.log("userId : ", userId);
+    console.log("id : ", id);
 
     if(!id){
       return this.validationErrorResponse(res, "User ID is required");
@@ -153,7 +162,7 @@ class UserController extends BaseController {
       return this.validationErrorResponse(res, "User not found");
     }
 
-    if(user.role !== "admin"){
+    if(req.user.role.toLowerCase() != "admin"){
       return this.validationErrorResponse(res, "You cannot delete this user");
     }
 
@@ -163,11 +172,23 @@ class UserController extends BaseController {
 
     const deletedUser = await UserRepo.deleteUser(id);
 
+    console.log("deletedUser : ", JSON.stringify(deletedUser,null,2));
+
     if (!deletedUser) {
       return this.errorResponse(res, "Failed to delete user", 400);
     }
 
-    return this.successResponse(res, deletedUser, "User deleted successfully");
+    const deletedStartup = await db.Startup.destroy({
+      where: {
+        entrepreneurId: id,
+      },
+    });
+
+    if (!deletedStartup) {
+      return this.errorResponse(res, "Failed to delete user startups", 400);
+    }
+
+    return this.successResponse(res, {}, "User deleted successfully");
   }
 }
 
