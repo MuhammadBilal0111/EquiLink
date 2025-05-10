@@ -15,7 +15,7 @@ function Wallet() {
     console.log(walletAddress);
   };
   return (
-    <div className="flex min-h-screen items-center justify-center w-full  text-white">
+    <div className="flex min-h-screen items-center justify-center w-full  text-white ml-52">
       <div className="w-full max-w-md rounded-2xl p-8 shadow-lg">
         <div className="flex flex-col items-center space-y-10">
           <FaEthereum className="text-6xl text-blue-400" />

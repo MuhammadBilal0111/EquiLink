@@ -45,10 +45,10 @@ const InvestorHome = () => {
       <img src="Banner.png" alt="Banner" />
       <div className="flex items-center gap-3 justify-end text-sm">
         Filter by category:
-        <SelectField 
-          className="w-40 cursor-pointer" 
+        <SelectField
+          className="w-40 cursor-pointer"
           includeAll={true}
-          onChange={setSelectedCategory} 
+          onChange={setSelectedCategory}
         />
       </div>
       <div className="flex flex-col gap-6">
@@ -67,7 +67,9 @@ const InvestorHome = () => {
                 </div>
               </div>
               <div className="flex-grow">
-              <p className="text-sm py-10">{pitch.description} </p>
+                <p className="text-sm py-10">
+                  {pitch.description.split(' ').slice(0, 25).join(' ')}{pitch.description.split(' ').length > 50 && '...'}
+                </p>
               </div>
               <div className="my-6 text-sm flex flex-col gap-1">
                 <p className="flex justify-between">
