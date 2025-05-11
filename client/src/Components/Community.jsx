@@ -32,6 +32,7 @@ const Community = () => {
     getPitches();
   }, [dispatch]);
 
+
   useEffect(() => {
     if (selectedCategory === "All") {
       setFilteredPitches(pitches.filter((pitch) => {
@@ -45,6 +46,7 @@ const Community = () => {
     }
   }, [selectedCategory, pitches]);
   console.log(authUser.user.id, "community")
+  console.log(filteredPitches,"filter")
   
 
   return (

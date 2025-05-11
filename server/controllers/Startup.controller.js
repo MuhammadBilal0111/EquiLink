@@ -74,7 +74,6 @@ class StartupController extends BaseController {
           model: db.User,
           as: "entrepreneur",
           attributes: ["id", "name", "role", "email", "proVersion"],
-
           include: [
             {
               model: db.UserProfile,

@@ -98,7 +98,9 @@ class AuthController extends BaseController {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
-    return this.successResponse(res, user, "User created successfully");
+      let token = this.signToken(JSON.stringify(user), res);
+
+    return this.successResponse(res, {token,user}, "User created successfully");
   };
 
 
