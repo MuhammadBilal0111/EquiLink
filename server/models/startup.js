@@ -17,8 +17,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "investorId",
         as: "investor",
       });
-
-     
     }
   }
   Startup.init(
@@ -47,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ARRAY(DataTypes.TEXT),
         allowNull: true,
       },
-      categoryName:{
+      categoryName: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -76,6 +74,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       projectFile: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      transactionHash: {
         type: DataTypes.STRING,
         allowNull: true,
       },

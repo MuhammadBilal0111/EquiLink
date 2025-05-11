@@ -35,20 +35,22 @@ const InvestorHome = () => {
     if (selectedCategory === "All") {
       setFilteredPitches(pitches);
     } else {
-      setFilteredPitches(pitches.filter((pitch) => pitch.categoryName === selectedCategory));
+      setFilteredPitches(
+        pitches.filter((pitch) => pitch.categoryName === selectedCategory)
+      );
     }
   }, [selectedCategory, pitches]);
-  console.log(filteredPitches)
+  console.log(filteredPitches);
 
   return (
     <div className="w-4/5 py-5 px-8 flex flex-col gap-4 ml-[18%]">
       <img src="Banner.png" alt="Banner" />
       <div className="flex items-center gap-3 justify-end text-sm">
         Filter by category:
-        <SelectField 
-          className="w-40 cursor-pointer" 
+        <SelectField
+          className="w-40 cursor-pointer"
           includeAll={true}
-          onChange={setSelectedCategory} 
+          onChange={setSelectedCategory}
         />
       </div>
       <div className="flex flex-col gap-6">
@@ -63,15 +65,19 @@ const InvestorHome = () => {
                 />
                 <div className="flex flex-col leading-tight">
                   <p className="text-lg">{pitch.title}</p>
-                  <p className="text-sm mt-[-3px]">{pitch.entrepreneur?.name}</p>
+                  <p className="text-sm mt-[-3px]">
+                    {pitch.entrepreneur?.name}
+                  </p>
                 </div>
               </div>
               <div className="flex-grow">
-              <p className="text-sm py-10">{pitch.description} </p>
+                <p className="text-sm py-10">{pitch.description} </p>
               </div>
               <div className="my-6 text-sm flex flex-col gap-1">
                 <p className="flex justify-between">
-                  <span className="text-[#C5C5C5] text-sm">Fundraising Goal:</span>
+                  <span className="text-[#C5C5C5] text-sm">
+                    Fundraising Goal:
+                  </span>
                   <span className="text-white">{pitch?.fundingGoal} coins</span>
                 </p>
                 <p className="flex justify-between">

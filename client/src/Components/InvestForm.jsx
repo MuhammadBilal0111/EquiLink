@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { backProject, isWalletConnected } from "@/services/blockchain";
 import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
+import { useParams } from "react-router";
 
 export default function InvestForm({
   fundingGoal,
@@ -21,11 +22,9 @@ export default function InvestForm({
   equity,
   entrepreneurId,
 }) {
-
   const { profile } = useSelector((store) => store.profileStore);
+  const { id: startupId } = useParams();
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState(profile?.user?.email || "");
-  const [telephone, setTelephone] = useState("");
   const [projectEquity, setProjectEquity] = useState(equity);
   const [walletAddress, setWalletAddress] = useState("");
 
@@ -41,40 +40,52 @@ export default function InvestForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (email && fundingGoal && telephone && projectEquity) {
-        const tx = await backProject(
-          walletAddress,
-          id,
-          fundingGoal,
-          profile?.user?.name,
-          projectEquity
-        );
-        const transactionData = {
-          entrepreneurId,
-          email,
-          transactionHash: tx.hash,
-          telephoneNo: telephone,
-          equity: projectEquity,
-          senderWallet: walletAddress,
-          status: "PaidOut",
-        };
-        console.log("Transaction Data:", transactionData);
 
-        // const result = await axiosInstance.put("/transaction", transactionData);
-        // if (result.status === "success") {
-        //   toast.success("Transaction completed!");
-        // } else {
-        //   toast.error("Error in making transaction");
-        // }
+    // Basic input validation
+    if (!fundingGoal || !projectEquity) {
+      toast.error("Please fill all fields.");
+      return;
+    }
+
+    try {
+      // Step 1: Perform blockchain transaction
+      const tx = await backProject(
+        walletAddress,
+        id,
+        fundingGoal,
+        profile?.user?.name,
+        projectEquity
+      );
+      console.log("Blockchain TX:", tx);
+
+      // Step 2: Prepare transaction data for backend
+      const transactionData = {
+        id: +startupId,
+        transactionHash: tx.hash,
+        equity: projectEquity,
+        walletAddress,
+        status: "PaidOut",
+      };
+      console.log("Transaction Data:", transactionData);
+
+      // Step 3: Send transaction data to backend
+      const response = await axiosInstance.patch(
+        "/startups/update-startup",
+        transactionData
+      );
+
+      if (response?.data?.status === true) {
+        setOpen(false);
+        toast.success("Transaction completed!");
       } else {
-        toast.error("Please fill all fields.");
+        toast.error("Error in updating backend status.");
       }
     } catch (error) {
+      console.error("Transaction error:", error);
       toast.error("Error in making transaction.");
-      console.log(error);
     }
   };
+  console.log("id", id);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -93,32 +104,12 @@ export default function InvestForm({
         <form onSubmit={handleSubmit} className="w-full">
           <div className="grid gap-4 py-4 w-full">
             <InputField
-              label="Email"
-              placeholder="your@email.com"
-              type="email"
-              className="w-full"
-              value={email}
-              handler={(e) => setEmail(e.target.value)}
-              required
-            />
-
-            <InputField
               label="Cost"
               type="text"
               placeholder="Eth"
               className="w-full"
               value={fundingGoal}
               disable={true}
-              required
-            />
-
-            <InputField
-              label="Telephone"
-              type="tel"
-              placeholder="+92-XXXXXXXXXX"
-              className="w-full"
-              value={telephone}
-              handler={(e) => setTelephone(e.target.value)}
               required
             />
 
