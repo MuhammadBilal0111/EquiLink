@@ -6,7 +6,7 @@ const authRoutes = require("./auth.route.js");
 const startupRoutes = require("./startup.route.js");
 
 router.use("/auth", authRoutes);
-router.use("/users", authMiddleware, userRoutes);
+router.use("/users", userRoutes);
 router.use("/startups", authMiddleware, startupRoutes);
 
 module.exports = router;
