@@ -1,7 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AdminSidebar from './AdminSidebar';
+import { useSelector } from 'react-redux';
+import { axiosInstance } from '@/lib/axios';
+import { useState } from 'react';
+import DashboardChart from './DashboardChart';
+
 
 const States = () => {
+  const [user, setUser] = useState(0);
+  const [pitch, setPitch] = useState(0);
+  const [investedPitch, setInvestedPitch] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  const data = [
+  { name: 'Users', value: user },
+  { name: 'Pitches', value: pitch },
+  { name: 'Invested', value: investedPitch },
+];
+
+
+const GetPitch = async () => {
+  const response = await axiosInstance.get("/startups/get-all-startups");
+  // console.log("API Response:", response.data); // Debugging log
+  // console.log("Data Array:", response.data.data); // Debugging log
+  setPitch(response.data.data.length)
+  const allPitches = response.data.data;
+  const investedPitchesCount = allPitches.filter(pitch => pitch.investor);
+  console.log("IP",investedPitchesCount);
+  const total = investedPitchesCount.reduce((sum, pitch) => sum + parseFloat(pitch.fundingGoal || 0), 0);
+  console.log("Total", total);
+  
+  setInvestedPitch(investedPitchesCount.length);
+  setTotalAmount(total);
+}
+
+
+
+const GetUsers = async () => {
+  const users = await axiosInstance.get('/users/get-all')
+  console.log("API Response:", users.data); // Debugging log
+  console.log("Data Array:", users.data.data); // Debugging log
+  setUser(users.data.data.length)
+
+}
+
+  
+  useEffect(()=>{
+    GetPitch()
+    GetUsers()
+  },[])
+
   return (
     <div className="min-h-screen w-full bg-[#0A0A0A] flex text-white">
       <AdminSidebar />
@@ -17,38 +65,35 @@ const States = () => {
         <div className="grid grid-cols-4 gap-6 mb-8 mt-2">
           <div className="bg-gradient-to-br from-[#D1B0D4] via-[#8B68AD] to-[#7446ba] rounded-xl p-4">
             <h3 className="text-sm mb-1">Total Users</h3>
-            <p className="text-2xl font-semibold">1,200</p>
+            <p className="text-2xl font-semibold">{user}</p>
           </div>
 
           <div className="bg-gradient-to-br from-[#4D4C7D] to-[#8D9EFF] rounded-xl p-4">
             <h3 className="text-sm mb-1">Total Pitches</h3>
-            <p className="text-2xl font-semibold">320</p>
+            <p className="text-2xl font-semibold">{pitch}</p>
           </div>
 
           <div className="bg-gradient-to-br from-[#3E54AC] to-[#7C73E6] rounded-xl p-4">
             <h3 className="text-sm mb-1">Payment Raised</h3>
-            <p className="text-2xl font-semibold">$85,000</p>
+            <p className="text-2xl font-semibold">{totalAmount}</p>
           </div>
 
           <div className="bg-gradient-to-br from-[#635985] to-[#cdb3f3] rounded-xl p-4">
             <h3 className="text-sm mb-1">Total Invested</h3>
-            <p className="text-2xl font-semibold">$45,000</p>
+            <p className="text-2xl font-semibold">{investedPitch}</p>
           </div>
         </div>
 
         {/* Charts Section */}
         <div className="grid grid-cols-2 gap-6">
           {/* Replace with image */}
-          <div className="bg-[#1A1A1A] rounded-xl h-[280px] flex items-center justify-center">
+          <div className="bg-[#171616] rounded-xl h-[280px] pr-8 pt-6">
             {/* Option 1: Use blank chart div */}
-            {/* <p className="text-gray-500">Chart 1 Placeholder</p> */}
-
-            {/* Option 2: Show chart image */}
-            <img src={''} alt="Dashboard Chart" className="w-full h-full object-contain p-4" />
+            <DashboardChart chartData={data}/>
           </div>
 
-          <div className="bg-[#1A1A1A] rounded-xl h-[280px] flex items-center justify-center">
-            <p className="text-gray-500">Chart 2 Placeholder</p>
+          <div className="bg-[#171717] rounded-xl h-[280px] ">
+            <video src="Transaction.mp4" className="w-full h-full object-cover rounded-lg shadow-lg" autoPlay loop muted />
           </div>
         </div>
       </div>

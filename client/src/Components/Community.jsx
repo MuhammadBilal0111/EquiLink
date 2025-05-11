@@ -32,6 +32,7 @@ const Community = () => {
     getPitches();
   }, [dispatch]);
 
+
   useEffect(() => {
     if (selectedCategory === "All") {
       setFilteredPitches(pitches.filter((pitch) => {
@@ -45,6 +46,7 @@ const Community = () => {
     }
   }, [selectedCategory, pitches]);
   console.log(authUser.user.id, "community")
+  console.log(filteredPitches,"filter")
   
 
   return (
@@ -74,7 +76,9 @@ const Community = () => {
                 </div>
               </div>
               <div className="flex-grow">
-              <p className="text-sm py-10">{pitch.description} </p>
+                <p className="text-sm py-10">
+              {pitch.description.split(' ').slice(0, 25).join(' ')}{pitch.description.split(' ').length > 50 && '...'}
+             </p>
               </div>
               <div className="my-6 text-sm flex flex-col gap-1">
                 <p className="flex justify-between">

@@ -156,7 +156,8 @@ class UserController extends BaseController {
   }
 
   const deletedUser = await UserRepo.deleteUser(id);
-  if (!deletedUser) {
+  const deletedProfile = await UserProfileRepo.deleteUserProfile(id);
+  if (!deletedUser || !deletedProfile) {
     return this.errorResponse(res, "Failed to delete user", 400);
   }
 

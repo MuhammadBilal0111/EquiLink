@@ -13,15 +13,21 @@ const Pitch = () => {
 
   const [selectedImage, setSelectedImage] = useState(pitch.pitchImages[0]);
 
-
   if (!pitch) {
     return <p className="text-white text-center mt-10">Pitch not found.</p>;
+  }
+  {
+    console.log(pitch.pitchImages[0]);
   }
 
   return (
     <div className="w-full bg-[#0A0A0A] flex flex-col text-white p-2">
-      <Link to={'/'}>
-        <img className="relative w-[120px] h-[30px] left-5 top-3 " src="/FullLogo.png" alt="logo" />
+      <Link to={"/"}>
+        <img
+          className="relative w-[120px] h-[30px] left-5 top-3 "
+          src="/FullLogo.png"
+          alt="logo"
+        />
       </Link>
       <div className="p-9 mb-4">
         <h1 className="text-3xl">{pitch.title}</h1>
@@ -40,7 +46,6 @@ const Pitch = () => {
           >
             Download Project File
           </a>
-
         </div>
 
         <div className="mt-8 flex gap-6">
@@ -53,7 +58,6 @@ const Pitch = () => {
             >
               Your browser does not support the video tag.
             </video>
-
           </div>
 
           {/* Right Section: Additional Images */}
@@ -83,8 +87,7 @@ const Pitch = () => {
           <p className="my-2 text-[#D9D9D9] ">{pitch.description}</p>
         </div>
 
-
-        <div className="flex gap-5 items-center mt-5" >
+        <div className="flex gap-5 items-center mt-5">
           {/* Fundraising Info */}
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-4 rounded-lg w-[50%]">
             <div className="flex justify-between items-center">
@@ -110,25 +113,24 @@ const Pitch = () => {
                 )}
               </span>
             </div>
-            {pitch.investorId ?
+            {pitch.investorId ? (
               <div className="flex flex-col gap-2 text-sm text-[#D9D9D9]">
                 Invested by:
                 <div className="flex gap-2">
                   <img
-                    src={pitch.investorImage || "https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"}
-                    alt={pitch.investorName}
+                    src={
+                      pitch.investor?.profile?.profileImage||
+                      "https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"
+                    }
+                    alt={pitch.investor.name}
                     className="w-8 h-8 rounded-full object-cover"
                   />
-                  <p className="text-base text-white">Abdul Ahad</p>
+                  <p className="text-base text-white">{pitch.investor.name}</p>
                 </div>
-
               </div>
-              : null
-            }
+            ) : null}
           </div>
         </div>
-
-
       </div>
     </div>
   );

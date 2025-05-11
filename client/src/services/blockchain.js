@@ -187,7 +187,6 @@ export const backProject = async (
     });
 
     console.log("Transaction Hash:", tx.hash); // Log transaction hash for debugging
-    toast.success("Transaction Completed!");
 
     await tx.wait(); // Wait for the transaction to be mined
     return tx;
