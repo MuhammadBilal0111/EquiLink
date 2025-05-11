@@ -62,9 +62,9 @@ module.exports = class BaseRepository {
   }
 
   async delete(id, type) {
-    if (type === "soft") {
+    if (type == "soft") {
       return this.softDelete(id);
-    } else if (type === "hard") {
+    } else if (type == "hard") {
       return this.model.destroy({
         where: { id },
       });

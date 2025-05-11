@@ -183,7 +183,7 @@ import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Button from "@/components/elements/Button";
-// import { CheckSendBirdUser, CreateSendBirdUser, CreateSendBirdChannel } from "@/constants/Service";
+import Service from "@/constants/Service";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import InvestForm from "@/Components/InvestForm";
 
@@ -367,7 +367,6 @@ const InvestorPitch = () => {
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-8 rounded-lg w-[50%]">
             <div className="flex justify-around items-center">
               <Button name="Message the owner" className="w-[15rem]" handler={handleMessageOwner} />
-              <Button name={"Invest"} className={"w-[15rem]"}></Button>
               <InvestForm
                 fundingGoal={pitch.fundingGoal}
                 id={pitch.contractProjectId}

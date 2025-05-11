@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const {Model} = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -11,12 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.UserProfile, {
         foreignKey: "userId",
         as: "profile",
+        onDelete: "CASCADE",
       });
 
       User.hasMany(models.Startup, {
         foreignKey: "entrepreneurId",
         as: "entrepreneur",
       });
+
     }
   }
   User.init(
@@ -41,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
       role: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     },
     {
