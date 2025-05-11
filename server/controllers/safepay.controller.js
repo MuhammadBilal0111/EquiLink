@@ -4,6 +4,7 @@ const safepay = require("../config/safepay.config.js");
 class SafepayController extends BaseController {
   createCheckout = async (req, res) => {
     const { amount, currency, projectId } = req.body;
+    console.log("Received data:", req.body);
     try {
       const { token } = await safepay.payments.create({
         amount,

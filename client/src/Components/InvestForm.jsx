@@ -15,6 +15,7 @@ import { backProject, isWalletConnected } from "@/services/blockchain";
 import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
 import { useParams } from "react-router";
+import { Loader2 } from "lucide-react";
 
 export default function InvestForm({
   fundingGoal,
@@ -27,6 +28,9 @@ export default function InvestForm({
   const [open, setOpen] = useState(false);
   const [projectEquity, setProjectEquity] = useState(equity);
   const [walletAddress, setWalletAddress] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCashLoading, setIsCashLoading] = useState(false);
+  const [Eth_price, setEth_price] = useState(659987.61);
 
   useEffect(() => {
     const fetchWalletAddress = async () => {
@@ -37,8 +41,25 @@ export default function InvestForm({
     };
     fetchWalletAddress();
   }, []);
-
-  const handleSubmit = async (e) => {
+  const handleCashInvestment = async () => {
+    try {
+      const response = await axiosInstance.post("/orders/payments/checkout", {
+        amount: fundingGoal * Eth_price,
+        currency: "PKR",
+        projectId: id,
+      });
+      console.log("Cash investment response:", response);
+      if (response?.data?.data?.url) {
+        window.location.href = response.data.data.url;
+      } else {
+        toast.error("Payment URL not received.");
+      }
+    } catch (err) {
+      console.error("Cash investment error:", err);
+      toast.error("Failed to initiate cash investment.");
+    }
+  };
+  const handleCryptoSubmit = async (e) => {
     e.preventDefault();
 
     // Basic input validation
@@ -85,7 +106,7 @@ export default function InvestForm({
       toast.error("Error in making transaction.");
     }
   };
-  console.log("id", id);
+  // console.log("id", id);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -94,17 +115,19 @@ export default function InvestForm({
           Confirm Invest
         </Btn>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-[#1a1919] text-gray-300">
+      <DialogContent className="sm:max-w-[425px] max-w-[90vw] bg-[#1a1919] text-gray-300 border-gray-700">
         <DialogHeader>
-          <DialogTitle className="text-gray-300">Confirm Invest</DialogTitle>
+          <DialogTitle className="text-gray-300">
+            Confirm Investment
+          </DialogTitle>
           <DialogDescription className="text-gray-400">
-            Please provide your contact and financial details below.
+            Please review and confirm your investment details.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="w-full">
+        <form onSubmit={handleCryptoSubmit} className="w-full">
           <div className="grid gap-4 py-4 w-full">
             <InputField
-              label="Cost"
+              label="Investment Amount in Eth"
               type="text"
               placeholder="Eth"
               className="w-full"
@@ -112,10 +135,18 @@ export default function InvestForm({
               disable={true}
               required
             />
-
+            <InputField
+              label="Investment Amount in PKR"
+              type="text"
+              placeholder="Pkr"
+              className="w-full"
+              value={fundingGoal * Eth_price}
+              disable={true}
+              required
+            />
             <InputField
               label="Equity (%)"
-              placeholder="Enter percentage of equity you offer"
+              placeholder="Enter percentage of equity"
               type="text"
               value={projectEquity}
               handler={(e) => setProjectEquity(e.target.value)}
@@ -124,9 +155,37 @@ export default function InvestForm({
             />
           </div>
           <DialogFooter>
-            <Btn type="submit" className="cursor-pointer">
-              Confirm Investment
-            </Btn>
+            <div className="flex flex-col gap-2 w-full">
+              <Btn
+                type="submit"
+                className="w-full bg-purple-700 hover:bg-purple-800 transition-colors cursor-pointer"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Invest with Crypto"
+                )}
+              </Btn>
+              <Btn
+                type="button"
+                onClick={handleCashInvestment}
+                className="w-full bg-green-600 hover:bg-green-700 transition-colors cursor-pointer"
+                disabled={isCashLoading}
+              >
+                {isCashLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  "Invest with Cash"
+                )}
+              </Btn>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>
