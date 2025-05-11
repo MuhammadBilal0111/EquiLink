@@ -33,7 +33,7 @@ const InvestedPitches = () => {
 
   // Filter pitches for the logged-in user
   const userPitches = pitches.filter(
-    (pitch) => pitch.entrepreneurId === authUser?.user?.id
+    (pitch) => pitch.investorId === authUser?.user?.id
   );
 
   return (

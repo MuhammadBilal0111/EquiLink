@@ -350,7 +350,9 @@ const InvestorPitch = () => {
           <p className="my-2 text-[#D9D9D9]">{pitch.description}</p>
         </div>
 
-        <div className="flex gap-5 items-center mt-5">
+        {pitch.investorId? null : (
+
+            <div className="flex gap-5 items-center mt-5">
           {/* Fundraising Info */}
         <div className="flex gap-5 items-center mt-5">
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-4 rounded-lg w-[50%]">
@@ -363,7 +365,6 @@ const InvestorPitch = () => {
               <p className="text-lg">{pitch.equity}%</p>
             </div>
           </div>
-
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-8 rounded-lg w-[50%]">
             <div className="flex justify-around items-center">
               <Button name="Message the owner" className="w-[15rem]" handler={handleMessageOwner} />
@@ -377,6 +378,8 @@ const InvestorPitch = () => {
           </div>
         </div>
       </div>
+    )}
+
     </div>
     </div>
   );

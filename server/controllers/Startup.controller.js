@@ -104,6 +104,8 @@ class StartupController extends BaseController {
     return this.successResponse(res, startups, "Startups fetched successfully");
   };
 
+
+
   updateStartups = async (req, res) => {
     const {id} = req.body;
     const userId = req.user.id;

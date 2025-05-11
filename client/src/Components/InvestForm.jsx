@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { backProject, isWalletConnected } from "@/services/blockchain";
 import { toast } from "sonner";
 import { axiosInstance } from "@/lib/axios";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 export default function InvestForm({
   fundingGoal,
@@ -22,6 +22,8 @@ export default function InvestForm({
   equity,
   entrepreneurId,
 }) {
+
+  const navigate = useNavigate()
   const { profile } = useSelector((store) => store.profileStore);
   const { id: startupId } = useParams();
   const [open, setOpen] = useState(false);
@@ -77,6 +79,7 @@ export default function InvestForm({
       if (response?.data?.status === true) {
         setOpen(false);
         toast.success("Transaction completed!");
+        navigate('/')
       } else {
         toast.error("Error in updating backend status.");
       }
