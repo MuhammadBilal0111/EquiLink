@@ -37,7 +37,7 @@ const AdminSidebar = () => {
             Users
           </NavLink>
 
-          <NavLink
+          {/* <NavLink
             to="/admin-pitches"
             className={({ isActive }) =>
               `flex items-center gap-8 ${
@@ -47,7 +47,7 @@ const AdminSidebar = () => {
           >
             <FaBitcoin size={19} />
             Pitches
-          </NavLink>
+          </NavLink> */}
         </nav>
       </div>
 

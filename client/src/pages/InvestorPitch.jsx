@@ -140,7 +140,9 @@ const InvestorPitch = () => {
           <p className="my-2 text-[#D9D9D9]">{pitch.description}</p>
         </div>
 
-        <div className="flex gap-5 items-center mt-5">
+        {pitch.investorId? null : (
+
+            <div className="flex gap-5 items-center mt-5">
           {/* Fundraising Info */}
         <div className="flex gap-5 items-center mt-5 w-full">
           <div className="flex flex-col gap-2 bg-[#1E1E1E] p-4 rounded-lg w-[50%]">
@@ -167,6 +169,8 @@ const InvestorPitch = () => {
           </div>
         </div>
       </div>
+    )}
+
     </div>
     </div>
   );

@@ -9,6 +9,8 @@ const InvestorHome = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pitches } = useSelector((state) => state.pitchStore);
+  const {authUser} = useSelector((store)=>store.userStore);
+  console.log(authUser?.user?.id, "here from investor")
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,10 +35,10 @@ const InvestorHome = () => {
 
   useEffect(() => {
     if (selectedCategory === "All") {
-      setFilteredPitches(pitches);
+      setFilteredPitches(pitches.filter((pitch)=>!pitch.investorId));
     } else {
       setFilteredPitches(
-        pitches.filter((pitch) => pitch.categoryName === selectedCategory)
+        pitches.filter((pitch) => (pitch.categoryName === selectedCategory) && (!pitch.investorId))
       );
     }
   }, [selectedCategory, pitches]);

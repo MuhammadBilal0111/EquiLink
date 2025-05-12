@@ -21,8 +21,8 @@ const States = () => {
 
 const GetPitch = async () => {
   const response = await axiosInstance.get("/startups/get-all-startups");
-  // console.log("API Response:", response.data); // Debugging log
-  // console.log("Data Array:", response.data.data); // Debugging log
+  console.log("API Response Pitch:", response.data); // Debugging log
+  console.log("Data Array Pitch:", response.data.data); // Debugging log
   setPitch(response.data.data.length)
   const allPitches = response.data.data;
   const investedPitchesCount = allPitches.filter(pitch => pitch.investor);
@@ -38,8 +38,8 @@ const GetPitch = async () => {
 
 const GetUsers = async () => {
   const users = await axiosInstance.get('/users/get-all')
-  console.log("API Response:", users.data); // Debugging log
-  console.log("Data Array:", users.data.data); // Debugging log
+  // console.log("API Response:", users.data); // Debugging log
+  // console.log("Data Array:", users.data.data); // Debugging log
   setUser(users.data.data.length)
 
 }

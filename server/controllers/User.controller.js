@@ -5,6 +5,7 @@ const UserProfileRepo = require("../repos/UserProfile.js");
 const UserRepo = require("../repos/UserRepo.js");
 const BlobStorageService = require("../services/BlobStorageService.js");
 const { where } = require("sequelize");
+const StartupRepo = require("../repos/StartupRepo.js");
 
 class UserController extends BaseController {
   
@@ -156,27 +157,10 @@ class UserController extends BaseController {
   }
 
   const deletedUser = await UserRepo.deleteUser(id);
-  const deletedProfile = await UserProfileRepo.deleteUserProfile(id);
-  if (!deletedUser || !deletedProfile) {
+  if (!deletedUser) {
     return this.errorResponse(res, "Failed to delete user", 400);
   }
 
-  // ✅ Check if user has a startup
-  const userStartup = await db.Startup.findOne({
-    where: { entrepreneurId: id },
-  });
-
-  if (userStartup) {
-    const deletedStartup = await db.Startup.destroy({
-      where: {
-        entrepreneurId: id,
-      },
-    });
-
-    if (!deletedStartup) {
-      return this.errorResponse(res, "Failed to delete user startup", 400);
-    }
-  }
 
   return this.successResponse(res, {}, "User deleted successfully");
 };
