@@ -172,7 +172,7 @@ const pitchSlice = createSlice({
   initialState: { pitches: [] },
   reducers: {
     setPitches: (state, action) => {
-      state.pitches = action.payload;
+      state.pitches = action.payload.slice().reverse();
     },
   },
 });

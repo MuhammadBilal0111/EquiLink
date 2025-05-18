@@ -122,3 +122,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .sendbird-theme--dark {
+    @apply bg-[#0A0A0A];
+  }
+}

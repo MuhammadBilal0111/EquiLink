@@ -74,7 +74,17 @@ class StartupController extends BaseController {
           model: db.User,
           as: "entrepreneur",
           attributes: ["id", "name", "role", "email", "proVersion"],
-
+          include: [
+            {
+              model: db.UserProfile,
+              as: "profile",
+            },
+          ],
+        },
+        {
+          model : db.User,
+          as : "investor",
+          attributes: ["id", "name", "role", "email", "proVersion"],
           include: [
             {
               model: db.UserProfile,
@@ -93,6 +103,8 @@ class StartupController extends BaseController {
 
     return this.successResponse(res, startups, "Startups fetched successfully");
   };
+
+
 
   updateStartups = async (req, res) => {
     const {id} = req.body;
@@ -149,8 +161,6 @@ class StartupController extends BaseController {
 
     return this.successResponse(res, deletedStartup, "Startup deleted successfully");
   };
-
-
 }
 
 module.exports = new StartupController();

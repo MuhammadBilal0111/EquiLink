@@ -9,6 +9,8 @@ const InvestorHome = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pitches } = useSelector((state) => state.pitchStore);
+  const {authUser} = useSelector((store)=>store.userStore);
+  console.log(authUser?.user?.id, "here from investor")
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,10 +35,10 @@ const InvestorHome = () => {
 
   useEffect(() => {
     if (selectedCategory === "All") {
-      setFilteredPitches(pitches);
+      setFilteredPitches(pitches.filter((pitch)=>!pitch.investorId));
     } else {
       setFilteredPitches(
-        pitches.filter((pitch) => pitch.categoryName === selectedCategory)
+        pitches.filter((pitch) => (pitch.categoryName === selectedCategory) && (!pitch.investorId))
       );
     }
   }, [selectedCategory, pitches]);
@@ -71,7 +73,9 @@ const InvestorHome = () => {
                 </div>
               </div>
               <div className="flex-grow">
-                <p className="text-sm py-10">{pitch.description} </p>
+                <p className="text-sm py-10">
+                  {pitch.description.split(' ').slice(0, 25).join(' ')}{pitch.description.split(' ').length > 50 && '...'}
+                </p>
               </div>
               <div className="my-6 text-sm flex flex-col gap-1">
                 <p className="flex justify-between">

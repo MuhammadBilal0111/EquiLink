@@ -99,7 +99,7 @@ const Pitch = () => {
               <p className="text-lg ">{pitch.equity}%</p>
             </div>
           </div>
-
+              {console.log(pitch, "investor id")}
           <div className="flex gap-40 bg-[#140F1B] border p-4 border-white rounded-lg w-[50%]">
             <div className="flex text-sm text-[#D9D9D9] flex-col gap-2">
               Investment status:
@@ -119,13 +119,13 @@ const Pitch = () => {
                 <div className="flex gap-2">
                   <img
                     src={
-                      pitch.investorImage ||
+                      pitch.investor?.profile?.profileImage||
                       "https://live.screendollars.com/wp-content/uploads/2021/10/TOM-CRUISE-3-scaled.jpg"
                     }
-                    alt={pitch.investorName}
+                    alt={pitch.investor.name}
                     className="w-8 h-8 rounded-full object-cover"
                   />
-                  <p className="text-base text-white">Abdul Ahad</p>
+                  <p className="text-base text-white">{pitch.investor.name}</p>
                 </div>
               </div>
             ) : null}

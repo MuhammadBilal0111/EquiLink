@@ -11,6 +11,11 @@ import { profileActions, userActions } from "./store";
 import AddPitch from "./Components/AddPitch";
 import Pitch from "./pages/Pitch";
 import InvestorPitch from "./pages/InvestorPitch"
+import DashboardPage from "./pages/DashboardPage";
+import UsersPage from "./pages/UsersPage";
+import PitchesPage from "./pages/PitchesPage";
+
+
 
 function App() {
 
@@ -32,19 +37,22 @@ function App() {
 
   useEffect(()=>{
     checkAuth()
+
   },[])
 
   return (
-    <>
+    <> 
       <Routes>
         <Route path="/" element={!authUser ? <LandingPage/> : <HomePage/>}/>
         <Route path="/signup" element={(!authUser || !user) ? <SignupPage /> : <Navigate to="/" />}/>
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />}/>
         <Route path="/add-pitch" element={(authUser || user) ? <AddPitch /> : <Navigate to="/login" />}/>
+        <Route path="/admin-dashboard" element={<DashboardPage/>} />
+        <Route path="/admin-users" element={<UsersPage/>} />
+        <Route path="/admin-pitches" element={<PitchesPage/>} />
         <Route path="/pitch/:id" element={authUser ? (authUser.user?.role === "Entrepreneur" ? <Pitch /> : <InvestorPitch />
           ) : (<Navigate to="/login" />)}
 />
-
       </Routes>
     </>
   );

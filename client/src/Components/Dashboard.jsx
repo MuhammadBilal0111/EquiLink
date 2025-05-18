@@ -14,7 +14,6 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log("Auth User:", authUser);
 
     const getPitches = async () => {
       setLoading(true);
@@ -69,15 +68,10 @@ const Dashboard = () => {
 
                 <div className="mt-6 p-4">
                   {/* Fund Received Tag */}
-                  {pitch.isFunded && (
-                    <span className="absolute top-3 right-3 bg-purple-600 text-white text-xs px-3 py-1 rounded-4xl">
-                      Fund Received
-                    </span>
-                  )}
 
-                  <span className="absolute top-41 right-3 bg-gradient-to-r from-[#6E499D] to-[#CAA8D0] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                  {pitch.investorId && (<span className="absolute top-41 right-3 bg-gradient-to-r from-[#6E499D] to-[#CAA8D0] text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                     <FaCheckCircle /> Fund Received
-                  </span>
+                  </span>)}
 
                   <h4 className="text-lg font-semibold">{pitch.title}</h4>
 

@@ -11,11 +11,13 @@ module.exports = (sequelize, DataTypes) => {
       Startup.belongsTo(models.User, {
         foreignKey: "entrepreneurId",
         as: "entrepreneur",
+        onDelete: "CASCADE",
       });
 
       Startup.belongsTo(models.User, {
         foreignKey: "investorId",
         as: "investor",
+        onDelete: "SET NULL",
       });
     }
   }
@@ -76,6 +78,11 @@ module.exports = (sequelize, DataTypes) => {
       projectFile: {
         type: DataTypes.STRING,
         allowNull: true,
+      },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       transactionHash: {
         type: DataTypes.STRING,

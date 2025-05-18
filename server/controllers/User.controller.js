@@ -4,6 +4,8 @@ const { validateCreateUserProfile } = require("../validators/UserValidator.js");
 const UserProfileRepo = require("../repos/UserProfile.js");
 const UserRepo = require("../repos/UserRepo.js");
 const BlobStorageService = require("../services/BlobStorageService.js");
+const { where } = require("sequelize");
+const StartupRepo = require("../repos/StartupRepo.js");
 
 class UserController extends BaseController {
   
@@ -96,6 +98,9 @@ class UserController extends BaseController {
           model: db.User,
           as: "user",
           attributes: ["id", "name", "email", "role","proVersion"],
+          where:{
+            isDeleted: false,
+          }
         },
       ],
     };
@@ -109,12 +114,14 @@ class UserController extends BaseController {
       userProfile = await UserProfileRepo.getUserProfiles(customQuery);
     }
 
+    console.log("custom query : ", customQuery)
+    console.log("userProfile : ", JSON.stringify(userProfile, null, 2));
+
     if (!userProfile) {
       return this.errorResponse(res, "User profile not found", 400);
     }
 
-    console.log(userProfile)
-    return this.successResponse(res, userProfile);
+    return this.successResponse(res,userProfile,"user profile retrieved successfully");
   };
 
   updateUserProfile = async (req, res) => {
@@ -137,39 +144,54 @@ class UserController extends BaseController {
     return this.successResponse(res, updatedUserProfile);
   };
 
-
   deleteUser = async (req, res) => {
-    const {id} = req.body;
-    const userId = req.user.id;
+  const { id } = req.body;
 
-    if(!id){
-      return this.validationErrorResponse(res, "User ID is required");
-    }
-
-    const user = await UserRepo.findById(id);
-
-    console.log("user : ", JSON.stringify(user));
-
-    if(!user){
-      return this.validationErrorResponse(res, "User not found");
-    }
-
-    if(user.role !== "admin"){
-      return this.validationErrorResponse(res, "You cannot delete this user");
-    }
-
-    if(userId == user.id){
-      return this.validationErrorResponse(res, "You cannot delete your own account");
-    }
-
-    const deletedUser = await UserRepo.deleteUser(id);
-
-    if (!deletedUser) {
-      return this.errorResponse(res, "Failed to delete user", 400);
-    }
-
-    return this.successResponse(res, deletedUser, "User deleted successfully");
+  if (!id) {
+    return this.validationErrorResponse(res, "User ID is required");
   }
+
+  const user = await UserRepo.findById(id);
+  if (!user) {
+    return this.validationErrorResponse(res, "User not found");
+  }
+
+  const deletedUser = await UserRepo.deleteUser(id);
+  if (!deletedUser) {
+    return this.errorResponse(res, "Failed to delete user", 400);
+  }
+
+
+  return this.successResponse(res, {}, "User deleted successfully");
+};
+
+
+
+  getAllUsers = async (req, res) => {
+  try {
+    const profiles = await UserProfileRepo.getUserProfiles({
+      include: [
+        {
+          model: db.User,
+          as: "user",
+          attributes: ["id", "name", "email", "role", "proVersion"],
+          where: { isDeleted: false}
+        },
+      ],
+    });
+
+    if (!profiles || profiles.length === 0) {
+      return this.successResponse(res, [], "No user profiles found");
+    }
+
+    return this.successResponse(res, profiles, "User profiles retrieved successfully");
+  } catch (error) {
+    console.error("Error fetching user profiles:", error);
+    return this.errorResponse(res, "Failed to retrieve user profiles", 500);
+  }
+};
+
+
 }
 
 module.exports = new UserController();

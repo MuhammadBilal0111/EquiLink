@@ -45,8 +45,8 @@ const Profile = () => {
 
   const { profile } = useSelector((store) => store.profileStore);
 
-  const [haveProfile, setHaveProfile] = useState(
-    JSON.parse(localStorage.getItem("haveProfile")) || false
+  const [haveProfile, setHaveProfile] = useState(false
+    // JSON.parse(localStorage.getItem("haveProfile")) || false
   );
 
   // Update localStorage whenever haveProfile changes
@@ -148,7 +148,9 @@ const Profile = () => {
     }
   };
 
-  const handleUpdates = async () => {};
+  const handleUpdates = async () => {
+    console.log("profile was ")
+  };
 
   const handlePasswordChange = async () => {
     if (newPassword.current.value != confirmPassword.current.value) {

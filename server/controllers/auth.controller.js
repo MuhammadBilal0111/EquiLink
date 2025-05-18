@@ -15,7 +15,7 @@ const { constants } = require("../utils/constant.js");
 
 class AuthController extends BaseController {
   signToken = (userResponse, res) => {
-    const token = jwt.sign({ data: userResponse }, jwtSecret, {
+    const token = jwt.sign({ data: userResponse}, jwtSecret, {
       expiresIn: constants.expiresIn,
     });
 
@@ -60,6 +60,7 @@ class AuthController extends BaseController {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
+
     let token = this.signToken(JSON.stringify(user), res);
 
     return this.successResponse(res, { user, token }, "login Successful");
@@ -97,8 +98,13 @@ class AuthController extends BaseController {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
 
-    return this.successResponse(res, user, "User created successfully");
+      let token = this.signToken(JSON.stringify(user), res);
+
+    return this.successResponse(res, {token,user}, "User created successfully");
   };
+
+
+
 
   changePassword = async (req, res) => {
     const { email, oldPassword, newPassword } = req.body;
