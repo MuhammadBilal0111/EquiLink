@@ -30,10 +30,9 @@ const Signup = () => {
 
         const email = emailRef.current?.value
         const password = passwordRef.current?.value
-        const contactNo =  phoneRef.current?.value
         const name = nameRef.current?.value
 
-        if(!email || !password || !contactNo || !name){
+        if(!email || !password || !name){
             toast.error("Please fill all the fields")
             return;
         }
@@ -47,14 +46,17 @@ const Signup = () => {
         try {
             const res = await axiosInstance.post("/auth/signup", data)
             if (res.data.status === true) {
-              dispatch(userActions.setUser(res.data.data));
-              toast.success("Signed up successfully!")
-              navigate('/home')
-            } else {
-            toast.error("Something went wrong");
-            }
+                const user = res.data.data
+                dispatch(userActions.setUser(user)); // Dispatching user data to Redux store
+                toast.success("Logged in successfully!")
+                localStorage.setItem("user",user)
+                navigate('/')
+                }
+                else {
+                toast.error("Something went wrong");
+                }
           } catch (err) {
-            toast.error(err.message);
+            toast.error("User with this email already exists");
           }
     }
 
@@ -99,7 +101,6 @@ const Signup = () => {
                             <div className="flex flex-col mb-3">
                                 <InputField label="Name" ref={nameRef} type="text" placeholder="Enter your full name" />
                                 <InputField label="Email" ref={emailRef} type="email" placeholder="Enter your email" />
-                                <InputField label="Phone" ref={phoneRef} type="tel" placeholder="Enter your phone number" />
                                 <InputField label="Password" ref={passwordRef} type="password" placeholder="Enter your password" />
                                 <InputField label="Confirm Password" ref={cPasswordRef} type="password" placeholder="Re-enter your password" />
                                 <InputRadio option1="Entrepreneur" option2="Investor" setValue={setRole} />

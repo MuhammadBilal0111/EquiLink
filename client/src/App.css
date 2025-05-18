@@ -1,0 +1,23 @@
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #000; /* Black background */
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #333; /* Dark gray handle */
+    border-radius: 5px; /* Rounded edges */
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Slightly lighter gray */
+  }
+  
+
+

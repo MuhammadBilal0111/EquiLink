@@ -3,9 +3,8 @@ const hre = require("hardhat");
 const path = require("path");
 
 async function main() {
-  const taxFee = 5;
   const Contract = await hre.ethers.getContractFactory("Genesis");
-  const contract = await Contract.deploy(taxFee); // passing tax in constructor
+  const contract = await Contract.deploy(); // passing tax in constructor
 
   // Wait for the deployment to complete
   await contract.waitForDeployment();

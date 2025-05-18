@@ -40,6 +40,23 @@ const Login = () => {
           }
     }
 
+
+    const handleResetPassword = async ()=>{
+        const data = {email:emailRef.current.value}
+        if(!data.email){
+            toast.error("Email is required")
+            return;
+        }
+        try{
+            const res = await axiosInstance.post("/auth/forgot-password",data)
+            if(res.data.status == true){
+                toast.success("Email is sent to your account succesfully")
+            }
+        }catch(err){
+            toast.error("Something went wrong")
+        }
+    }
+
     return (
         <>
             <div className="relative bg-black h-screen w-full">
@@ -81,6 +98,7 @@ const Login = () => {
                             <div className="flex flex-col gap-1">
                                 <InputField label="Email" ref={emailRef} placeholder="Enter your email" />
                                 <InputField label="Password" ref={passwordRef} type="password" placeholder="Enter your password" />
+                                <p className='text-sm self-end text-white cursor-pointer' onClick={handleResetPassword}>Forgot Password?</p>
                             </div>
 
                             <div className="w-full flex flex-col justify-center items-center gap-3">

@@ -3,54 +3,44 @@ pragma solidity ^0.8.28;
 
 contract Genesis {
     address public owner;
-    uint public projectTax;
     uint public projectCount;
-    uint public balance;
     statsStruct public stats;
     projectStruct[] projects;
 
     mapping(address => projectStruct[]) projectsOf;
-    mapping(uint => backerStruct[]) backersOf;
     mapping(uint => bool) public projectExist;
-
-    enum statusEnum {
-        OPEN,
-        APPROVED,
-        REVERTED,
-        DELETED,
-        PAIDOUT
-    }
+    mapping(string => projectStruct) projectsOfByName;
 
     struct statsStruct {
         uint totalProjects;
-        uint totalBacking;
-        uint totalDonations;
+        uint totalInvestors;
+        uint totalInvestment;
     }
-
-    struct backerStruct {
-        address owner;
-        uint contribution;
-        uint timestamp;
-        bool refunded;
+    enum ProjectStatus {
+        OPEN,
+        PAIDOUT
     }
-
     struct projectStruct {
         uint id;
         address owner;
         string title;
         string description;
+        string category;
+        string slug;
         uint cost;
         uint raised;
         uint timestamp;
-        uint backer;
-        statusEnum status;
+        address investorAddress;
+        string ownerName;
+        string investorName;
+        uint equity;
+        ProjectStatus status;
     }
 
     modifier ownerOnly() {
         require(msg.sender == owner, "Owner reserved only");
         _;
     }
-
     event Action(
         uint256 id,
         string actionType,
@@ -58,18 +48,23 @@ contract Genesis {
         uint256 timestamp
     );
 
-    constructor(uint _projectTax) {
+    constructor() {
         owner = msg.sender;
-        projectTax = _projectTax;
     }
-
     function createProject(
         string memory title,
         string memory description,
+        string memory category,
+        string memory ownerName,
+        string memory slug,
+        uint equity,
         uint cost
     ) public returns (bool) {
         require(bytes(title).length > 0, "Title cannot be empty");
         require(bytes(description).length > 0, "Description cannot be empty");
+        require(bytes(category).length > 0, "Category cannot be empty");
+        require(bytes(ownerName).length > 0, "Owner Name cannot be empty");
+        require(bytes(slug).length > 0, "Slug cannot be empty");
         require(cost > 0 ether, "Cost cannot be zero");
 
         projectStruct memory project;
@@ -77,11 +72,16 @@ contract Genesis {
         project.owner = msg.sender;
         project.title = title;
         project.description = description;
+        project.category = category;
+        project.slug = slug;
         project.cost = cost;
+        project.equity = equity;
         project.timestamp = block.timestamp;
-
+        project.status = ProjectStatus.OPEN;
+        project.ownerName = ownerName;
         projects.push(project);
         projectExist[projectCount] = true;
+        projectsOfByName[slug] = (project);
         projectsOf[msg.sender].push(project);
         stats.totalProjects += 1;
 
@@ -93,135 +93,83 @@ contract Genesis {
         );
         return true;
     }
-
-    function updateProject(
+    // function to refund project
+    function backProject(
         uint id,
-        string memory title,
-        string memory description
-    ) public returns (bool) {
-        require(msg.sender == projects[id].owner, "Unauthorized Entity");
-        require(bytes(title).length > 0, "Title cannot be empty");
-        require(bytes(description).length > 0, "Description cannot be empty");
-
-        projects[id].title = title;
-        projects[id].description = description;
-
-        emit Action(id, "PROJECT UPDATED", msg.sender, block.timestamp);
-
-        return true;
-    }
-
-    function deleteProject(uint id) public returns (bool) {
-        require(
-            projects[id].status == statusEnum.OPEN,
-            "Project no longer opened"
-        );
-        require(msg.sender == projects[id].owner, "Unauthorized Entity");
-
-        projects[id].status = statusEnum.DELETED;
-        performRefund(id);
-
-        emit Action(id, "PROJECT DELETED", msg.sender, block.timestamp);
-
-        return true;
-    }
-
-    function performRefund(uint id) internal {
-        for (uint i = 0; i < backersOf[id].length; i++) {
-            address _owner = backersOf[id][i].owner;
-            uint _contribution = backersOf[id][i].contribution;
-            backersOf[id][i].refunded = true;
-            backersOf[id][i].timestamp = block.timestamp;
-            payTo(_owner, _contribution);
-
-            stats.totalBacking -= 1;
-            stats.totalDonations -= _contribution;
-        }
-    }
-
-    function backProject(uint id) public payable returns (bool) {
-        require(msg.value == projects[id].cost, "Ether must be equal to cost");
+        string memory investorName,
+        uint equity
+    ) public payable returns (bool) {
+        require(msg.value > 0 ether, "Ether must be greater than zero");
         require(projectExist[id], "Project not found");
         require(
-            projects[id].status == statusEnum.OPEN,
-            "Project no longer opened"
+            msg.value == projects[id].cost,
+            "Ether must be equal than cost"
         );
-
-        stats.totalBacking += 1;
-        stats.totalDonations += msg.value;
-        projects[id].raised += msg.value;
-        projects[id].backer += 1;
-
-        backersOf[id].push(
-            backerStruct(msg.sender, msg.value, block.timestamp, false)
+        require(
+            projects[id].status != ProjectStatus.PAIDOUT,
+            "Project cannot be backed"
         );
-
-        emit Action(id, "PROJECT BACKED", msg.sender, block.timestamp);
-
-        if (projects[id].raised == projects[id].cost) {
-            projects[id].status = statusEnum.APPROVED;
-            balance += projects[id].raised;
-            performPayout(id);
-            return true;
+        address projectOwner = projects[id].owner;
+        for (uint i = 0; i < projectsOf[projectOwner].length; i++) {
+            if (projectsOf[projectOwner][i].id == id) {
+                projectsOf[projectOwner][i].raised = msg.value;
+                projectsOf[projectOwner][i].investorAddress = msg.sender;
+                projectsOf[projectOwner][i].investorName = investorName;
+                projectsOf[projectOwner][i].equity = equity;
+                break;
+            }
         }
-
+        // Ensure other mappings are updated properly
+        projects[id].investorAddress = msg.sender;
+        projects[id].investorName = investorName;
+        projects[id].raised = msg.value;
+        projects[id].equity = equity;
+        projectsOfByName[projects[id].slug] = projects[id];
+        stats.totalInvestors += 1;
+        stats.totalInvestment += msg.value;
+        performPayout(id);
+        emit Action(id, "PROJECT BACKED", msg.sender, block.timestamp);
         return true;
     }
-
     function performPayout(uint id) internal {
         uint raised = projects[id].raised;
-        uint tax = (raised * projectTax) / 100;
-
-        projects[id].status = statusEnum.PAIDOUT;
-
-        payTo(projects[id].owner, (raised - tax));
-        payTo(owner, tax);
-
-        balance -= projects[id].raised;
-
+        projects[id].raised = 0;
+        payTo(projects[id].owner, raised);
+        projects[id].status = ProjectStatus.PAIDOUT;
+        address projectOwner = projects[id].owner;
+        for (uint i = 0; i < projectsOf[projectOwner].length; i++) {
+            if (projectsOf[projectOwner][i].id == id) {
+                projectsOf[projectOwner][i].status = ProjectStatus.PAIDOUT;
+                break;
+            }
+        }
         emit Action(id, "PROJECT PAID OUT", msg.sender, block.timestamp);
-    }
-
-    function requestRefund(uint id) public returns (bool) {
-        require(
-            projects[id].status != statusEnum.REVERTED ||
-                projects[id].status != statusEnum.DELETED,
-            "Project not marked as revert or delete"
-        );
-
-        projects[id].status = statusEnum.REVERTED;
-        performRefund(id);
-        return true;
-    }
-    // withdraw money
-    function payOutProject(uint id) public returns (bool) {
-        require(
-            projects[id].status == statusEnum.APPROVED,
-            "Project not APPROVED"
-        );
-        require(
-            msg.sender == projects[id].owner || msg.sender == owner,
-            "Unauthorized Entity"
-        );
-
-        performPayout(id);
-        return true;
-    }
-
-    function changeTax(uint _taxPct) public ownerOnly {
-        projectTax = _taxPct;
-    }
-
-    function getProjects() public view returns (projectStruct[] memory) {
-        return projects;
-    }
-
-    function getBackers(uint id) public view returns (backerStruct[] memory) {
-        return backersOf[id];
     }
 
     function payTo(address to, uint256 amount) internal {
         (bool success, ) = payable(to).call{value: amount}("");
-        require(success);
+        require(success, "Payment failed");
+    }
+    function getProjects() public view returns (projectStruct[] memory) {
+        return projects;
+    }
+    function getProjectsByAddress()
+        public
+        view
+        returns (projectStruct[] memory)
+    {
+        return projectsOf[msg.sender];
+    }
+
+    function getProjectBySlug(
+        string memory _slug
+    ) public view returns (projectStruct memory) {
+        return projectsOfByName[_slug];
+    }
+    function getProjectById(
+        uint id
+    ) public view returns (projectStruct memory) {
+        require(projects[id].owner != address(0), "Invalid project ID");
+        return projects[id];
     }
 }

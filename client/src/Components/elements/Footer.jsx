@@ -5,10 +5,10 @@ const Footer = ()=>{
         <div className="bg-black m-0 min-h-[25rem] flex justify-around w-[95vw]">
 
             {/* left side */}
-            <div className="flex flex-col justify-center ml-10 w-[50%] gap-5">
+            <div className="flex flex-col justify-center ml-10 w-[50%] gap-8">
                 <div><img src="FullLogo.png" alt="" /></div>
-                <div className="text-[#ADADAD] w-[50%] text-sm">Lorem ipsum is a dummy or placeholder text commonly used in graphic design, publishing, and web development</div>
-                <div className="text-white text-lg">equilink.com</div>
+                <div className="text-[#cccccc] w-[50%] text-sm">Equilink is a revolutionary crowdfunding platform designed for e-commerce startups.</div>
+                <div className="text-white">equilink.com</div>
             </div>
 
 

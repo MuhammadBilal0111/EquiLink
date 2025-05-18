@@ -15,6 +15,7 @@ app.use(cookieParser());
 const allowedOrigins = "http://localhost:5173";
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
+
 app.use("/api",  routes);
 
 app.get("/users", (req, res) => {
